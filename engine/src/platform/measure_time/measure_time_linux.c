@@ -51,7 +51,7 @@ inline void UpdateDoubleTimeStamp(DoubleTimeStamp *ptr) {
 
 // a - b
 inline TimeStamp TimeDiff(TimeStamp a, TimeStamp b) {
-	// checks if a > b
+	// checks if a >= b
 	assert(
 		b.sec < a.sec ||
 		(b.sec == a.sec && b.nsec < a.nsec)

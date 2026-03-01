@@ -20,5 +20,6 @@ target_link_directories(game PRIVATE
 
 target_link_libraries(game
 	PRIVATE engine
+		SDL3
 )
 

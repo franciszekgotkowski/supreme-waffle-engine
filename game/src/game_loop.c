@@ -19,7 +19,9 @@
 #include <string.h>
 
 #include <math.h>
+#include <time.h>
 #include <external/glfw3.h>
+#include <SDL3/SDL.h>
 
 extern PointerTable *GameMemory;
 
@@ -127,8 +129,19 @@ void GameLoop() {
         updateBuffer();
         handleEngineEvents();
         windowData->framesElapsed++;
-        MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
-        windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
+
+
+
+        // MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
+        TimeStamp nowStamp = InitializeTimeStamp();
+        TimeStamp diff = TimeDiff(nowStamp, windowData->frametimeEveningTimeStamp);
+        if (CompareTimeStamps(diff, windowData->frametime) == -1) {
+            TimeStamp timeToWait = TimeDiff(windowData->frametime, diff);
+            u64 nsToWait = timeToWait.sec*1000000000 + timeToWait.nsec;
+            SDL_DelayPrecise(nsToWait);
+            windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
+            printf("Nanoseconds waited: %llu\n", (llu)nsToWait);
+        }
     }
     CloseWindow();
     u64 frames = windowData->framesElapsed;
