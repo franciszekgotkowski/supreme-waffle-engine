@@ -111,6 +111,7 @@ void GameLoop() {
     loc = glGetUniformLocation(FontShader, "offset");
 
     WindowData* windowData = getRegion(WINDOW_DATA);
+    windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
     while (!((WindowData *) getRegion(WINDOW_DATA))->windowShouldClose) {
         clearScreen();
 
@@ -123,10 +124,11 @@ void GameLoop() {
         glUniform2fv(loc, 1, offset);
         glDrawElements(GL_TRIANGLES, strlen(s)*6, GL_UNSIGNED_INT, (void *) 0);
 
-
         updateBuffer();
         handleEngineEvents();
         windowData->framesElapsed++;
+        MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
+        windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
     }
     CloseWindow();
     u64 frames = windowData->framesElapsed;

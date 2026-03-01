@@ -83,7 +83,7 @@ void InitializeWindow(
         .height = height,
         .width = width,
         .fps = fps,
-        .frametime = 1000.0f/fps,
+        .frametime = CalculateFrametime(fps),
         .cursorMode = cursorModeGlfw,
         .vsync = vsync,
         .resizable = resizable,

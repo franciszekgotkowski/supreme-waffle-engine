@@ -1,3 +1,5 @@
+#include "engine/typedefs.h"
+#include <bits/time.h>
 #include <engine/memory_pool.h>
 #include <engine/platform/measure_time.h>
 
@@ -47,29 +49,39 @@ inline void UpdateDoubleTimeStamp(DoubleTimeStamp *ptr) {
 	return;
 }
 
+// a - b
+inline TimeStamp TimeDiff(TimeStamp a, TimeStamp b) {
+	// checks if a > b
+	assert(
+		b.sec < a.sec ||
+		(b.sec == a.sec && b.nsec < a.nsec)
+	);
+
+	TimeStamp timeDiff = {};
+
+	if (a.nsec < b.nsec) {
+		u64 nsecDiff = b.nsec - a.nsec;
+
+		timeDiff.sec = a.sec - b.sec - 1;
+		timeDiff.nsec = 1000000000 - nsecDiff;
+	} else {
+		timeDiff.nsec = a.nsec - b.nsec;
+		timeDiff.sec = a.sec - b.sec;
+	}
+
+	return timeDiff;
+}
+
 inline TimeStamp TimeSince(TimeStamp stamp) {
 		struct timespec now;
 		i32 errno = clock_gettime(CLOCK_REALTIME, &now);
 		assert(errno == 0);
+		TimeStamp nowTimeStamp = {
+			.sec = now.tv_sec,
+			.nsec = now.tv_nsec
+		};
 		// checking if stamp is not from future
-		assert(
-			stamp.sec < now.tv_sec ||
-			(stamp.sec == now.tv_sec && stamp.nsec < now.tv_nsec)
-		);
-
-		TimeStamp timeDiff = {};
-
-		if (now.tv_nsec < stamp.nsec) {
-			u64 nsecDiff = stamp.nsec - now.tv_nsec;
-
-			timeDiff.sec = now.tv_sec - stamp.sec - 1;
-			timeDiff.nsec = 1000000000 - nsecDiff;
-		} else {
-			timeDiff.nsec = now.tv_nsec - stamp.nsec;
-			timeDiff.sec = now.tv_sec - stamp.sec;
-		}
-
-		return timeDiff;
+		return TimeDiff(nowTimeStamp, stamp);
 }
 inline TimeStamp PrintTimeSince(TimeStamp stamp) {
 	TimeStamp diff = TimeSince(stamp);
@@ -77,7 +89,7 @@ inline TimeStamp PrintTimeSince(TimeStamp stamp) {
 	return diff;
 }
 
-inline i8 Smaller(TimeStamp a, TimeStamp b) {
+inline i8 CompareTimeStamps(TimeStamp a, TimeStamp b) {
 	if (a.sec < b.sec) {
 		return -1;
 	} else if (a.sec > b.sec) {
@@ -93,20 +105,77 @@ inline i8 Smaller(TimeStamp a, TimeStamp b) {
 	}
 }
 
+inline TimeStamp AddTimestamps(TimeStamp a, TimeStamp b) {
+	TimeStamp stamp = {
+		.sec = a.sec + b.sec,
+		.nsec = a.nsec + b.nsec
+	};
+
+	if (stamp.nsec >= 1000000000) {
+		stamp.nsec -= 1000000000;
+		stamp.sec++;
+	}
+
+	return stamp;
+}
+
+inline void SleepTime(TimeStamp amount) {
+	TimeStamp errorMargin = {
+		.sec = 0,
+		.nsec = 2000000
+	};
+
+	struct timespec functionStart;
+	clock_gettime(CLOCK_REALTIME, &functionStart);
+	TimeStamp functionStartStamp = {
+		.sec = functionStart.tv_sec,
+		.nsec = functionStart.tv_nsec,
+	};
+	TimeStamp final = (TimeStamp)AddTimestamps(amount, functionStartStamp);
+
+	struct timespec newTime = {
+		.tv_sec = amount.sec,
+		.tv_nsec = amount.nsec
+	};
+	if (CompareTimeStamps(amount, errorMargin) == 1) {
+		newTime.tv_nsec -= errorMargin.nsec;
+		struct timespec elapsed;
+		nanosleep(&newTime, &elapsed);
+	}
+
+	TimeStamp now;
+	while (1) {
+		clock_gettime(CLOCK_REALTIME, (struct timespec*)&now);
+		if (CompareTimeStamps(final, now) == -1) {
+			break;
+		}
+	}
+}
+
 inline void MatchFrametime(TimeStamp frameTime, TimeStamp lastStamp) {
 	TimeStamp elapsed = TimeSince(lastStamp);
 
-	if (Smaller(elapsed, frameTime) == 1) {
-		printf("FRAMETIME MISSED!!!\tFRAME TOOK %llus %llums\n", (llu)elapsed.sec, (llu)elapsed.nsec);
+	if (CompareTimeStamps(elapsed, frameTime) == 1) {
+		printf("FRAMETIME MISSED!!!\tFRAME TOOK %llus %lluns\n", (llu)elapsed.sec, (llu)elapsed.nsec);
 		return;
 	}
 
-	struct timespec diff = {
-		.tv_sec = frameTime.sec - elapsed.sec,
-		.tv_nsec = frameTime.nsec - elapsed.nsec
-	};
-	struct timespec remaining;
+	TimeStamp timeToWait = TimeDiff(frameTime, elapsed);
+	SleepTime(timeToWait);
+}
 
-	i32 errno = nanosleep(&diff, &remaining);
-	assert(errno == 0);
+inline TimeStamp CalculateFrametime(u64 fps) {
+	assert(fps > 0);
+
+	if (fps == 1) {
+		return (TimeStamp){
+			.sec = 1,
+			.nsec = 0
+		};
+	}
+
+	return (TimeStamp){
+		.sec = 0,
+		.nsec = 1000000000 / fps
+	};
 }

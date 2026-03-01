@@ -18,13 +18,13 @@ typedef struct {
     i32 width;
     i32 height;
     i32 fps;
-    f32 frametime;
     i32 cursorMode;
     bool vsync;
     bool resizable;
     bool windowShouldClose;
     v4 clearColor;
 
+    TimeStamp frametime;
     u64 framesElapsed;
     TimeStamp bootTimeStamp;
     TimeStamp frametimeEveningTimeStamp;
