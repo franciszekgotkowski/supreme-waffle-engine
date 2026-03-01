@@ -130,7 +130,6 @@ void GameLoop() {
         MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
         windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
     }
-    CloseWindow();
     u64 frames = windowData->framesElapsed;
     // TODO: probably some number overflow in PrintTimeSince on miliseconds
     TimeStamp since = PrintTimeSince(windowData->bootTimeStamp);
@@ -139,4 +138,5 @@ void GameLoop() {
     f64 fsince = fsec + fnsectosec;
     f64 fps = (f64)frames/fsince;
     printf("Average fps: %f\n", fps);
+    CloseWindow();
 }
