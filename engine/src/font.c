@@ -133,6 +133,7 @@ static inline void handle_chars(mstr ms, Font* font){
 }
 
 static inline u64 offsetTableSize(Font* font) {
+	assert(font->highestCharCode <= 255);
 	return sizeof(u64)*(1+font->highestCharCode);
 }
 

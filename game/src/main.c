@@ -23,7 +23,7 @@
 PointerTable* GameMemory = NULL;
 
 int main() {
-	Error err;
+	// Error err;
 
 	GameMemory = InitializePool();
 	assert(GameMemory);
@@ -43,38 +43,17 @@ int main() {
     InitializeInputFunctions();
     InsertInputFunctions();
 
-    err = LoadGameScene(
-    	"stub",
-     	"stub"
-    );
-    assert(err == OK);
+    // err = LoadLoadingScreenScene(
+    //  	"stub",
+    //   	"stub"
+    // );
+    // assert(err == OK);
 
-    err = LoadLoadingScreenScene(
-     	"stub",
-      	"stub"
-    );
-    assert(err == OK);
-
-    // just experimenting with loading fonts into memory
-    // to be moved elsewhere
-  //   {
-  //  		FileData file;
-  //    	readEntireTextFile("../../assets/fonts/bdf/cherry-11-r.bdf", &file);
-  //     	Font f = InitializeFont(file);
-  //      	printf("space needed for cherry-11-r.bdf = %llu\n", (llu)GetSizeForEntireFont(&f));
-
-  //       Font* font = alloca(GetSizeForEntireFont(&f));
-
-
-		// *font = f;
-  //       InitializeCharacterDataOntoFont(font, file);
-
-  //       freeEntireTextFile(file);
-
-  //       stbi_write_png("./cherryfont.png", (i32)bitmapW(font), (i32)bitmapH(font), 1, font->characterBitmap, (i32)bitmapW(font));
-  //       // CreateRenderObject
-  //       // DrawRednerObject
-  //   }
+    // err = LoadGameScene(
+    // 	"stub",
+    //  	"stub"
+    // );
+    // assert(err == OK);
 
     GameLoop();
 

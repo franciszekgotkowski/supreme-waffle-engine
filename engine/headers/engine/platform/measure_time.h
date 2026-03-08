@@ -34,7 +34,7 @@ TimeStamp PrintTimeSince(TimeStamp stamp);
 
 // will return -1 if a is earlier and 1 if b is earlier.
 // If they are equal function will return 0
-i8 CompareTimeStamps(TimeStamp a, TimeStamp b);
+i8 SmallerTimeStamp(TimeStamp a, TimeStamp b);
 
 // function will wait (using system time and busy wait) to match frametime.
 // If time since lastStamp is bigger than frameTime function will just printf

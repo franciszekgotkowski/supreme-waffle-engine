@@ -15,8 +15,8 @@ typedef enum {
 
 typedef struct {
     void* window;
-    i32 width;
-    i32 height;
+    i32 windowWidth;
+    i32 windowHeight;
     i32 fps;
     i32 cursorMode;
     bool vsync;
@@ -31,8 +31,8 @@ typedef struct {
 } WindowData ;
 
 void InitializeWindow(
-	i32 width,
-	i32 height,
+	i32 windowWidth,
+    i32 windowHeight,
 	i32 fps,
 	bool vsync,
 	bool resizable,

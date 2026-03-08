@@ -30,12 +30,12 @@ static void framebuffer_size_callback(
 
 	WindowData* const windowData = GameMemory->regions[WINDOW_DATA].ptr;
 
-	printf("window is resized from %dx%d to %dx%d\n", windowData->height, windowData->width, height, width);
+	printf("window is resized from %dx%d to %dx%d\n", windowData->windowHeight, windowData->windowWidth, height, width);
 
-    windowData->width = width;
-    windowData->height = height;
+    windowData->windowWidth = width;
+    windowData->windowHeight = height;
 
-    glViewport(0, 0, windowData->width, windowData->height);
+    glViewport(0, 0, windowData->windowWidth, windowData->windowHeight);
 }
 
 static inline void window_should_close_callback(
@@ -46,8 +46,8 @@ static inline void window_should_close_callback(
 }
 
 void InitializeWindow(
-	i32 width,
-	i32 height,
+	i32 windowWidth,
+	i32 windowHeight,
 	i32 fps,
 	bool vsync,
 	bool resizable,
@@ -58,7 +58,7 @@ void InitializeWindow(
 	WindowData* const windowData = getRegion(WINDOW_DATA);
     assert(windowData);
     assert(title);
-    assert(width > 0 && height > 0 && fps > 0);
+    assert(windowWidth > 0 && windowHeight > 0 && fps > 0);
 
     i32 cursorModeGlfw;
     switch (cursorMode) {
@@ -80,8 +80,8 @@ void InitializeWindow(
 
     (*windowData) = (WindowData){
         .window = NULL,
-        .height = height,
-        .width = width,
+        .windowHeight = windowHeight,
+        .windowWidth = windowWidth,
         .fps = fps,
         .frametime = CalculateFrametime(fps),
         .cursorMode = cursorModeGlfw,
@@ -102,7 +102,7 @@ void InitializeWindow(
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, resizable ? GLFW_TRUE : GLFW_FALSE);
 
-    windowData->window = glfwCreateWindow(width, height, title, NULL, NULL);
+    windowData->window = glfwCreateWindow(windowWidth, windowHeight, title, NULL, NULL);
     assert(windowData->window);
 
     glfwMakeContextCurrent(windowData->window);
@@ -112,8 +112,8 @@ void InitializeWindow(
 
     assert(gladLoadGLLoader((GLADloadproc) glfwGetProcAddress));
 
-    glfwGetFramebufferSize(windowData->window, &(windowData->width), &(windowData->height));
-    glViewport(0, 0, windowData->width, windowData->height);
+    glfwGetFramebufferSize(windowData->window, &(windowData->windowWidth), &(windowData->windowHeight));
+    glViewport(0, 0, windowData->windowWidth, windowData->windowHeight);
     glClearColor(windowData->clearColor.arr[0],windowData->clearColor.arr[1], windowData->clearColor.arr[2], windowData->clearColor.arr[3]);
 
     glfwSetFramebufferSizeCallback(windowData->window, framebuffer_size_callback);
@@ -121,6 +121,7 @@ void InitializeWindow(
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glfwPollEvents();
 }
 
 void SetWindowToClose() {

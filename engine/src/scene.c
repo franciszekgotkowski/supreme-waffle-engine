@@ -5,44 +5,14 @@
 
 extern PointerTable* GameMemory;
 
-// TODO: Write file parser for .ui files
-static u64 evalueateUiSizeInBytes(
-	str path
-) {
-	assert(path);
-	return 0;
-}
-
-static u64 evalueateAreaSizeInBytes(
-	str path
-) {
-	assert(path);
-	return 0;
-}
-
 Error InitializeScene(
 	SceneData* sceneData,
-	u64 capacity,
+	u64 size,
 	str uiPath,
 	str areaPath
 ) {
-	assert(sceneData);
-	assert(uiPath);
-	assert(areaPath);
-
-	u64 uiSizeInBytes = evalueateUiSizeInBytes(uiPath);
-	assert(uiSizeInBytes + evalueateAreaSizeInBytes(areaPath) <= capacity);
-	if (uiSizeInBytes + evalueateAreaSizeInBytes(areaPath) > capacity) {
-		return OUT_OF_MEMORY;
-	}
-
-	*sceneData = (SceneData){
-		.sceneCapacity = capacity,
-		.uiData = (void*)sceneData + sizeof(SceneData),
-		.areaData = (void*)sceneData + sizeof(SceneData) + uiSizeInBytes
-	};
-
-	return OK;
+	assert(0);
+	return LOGIC_ERROR;
 }
 
 Error LoadGameScene(

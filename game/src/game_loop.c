@@ -1,4 +1,4 @@
-#include "engine/platform/measure_time.h"
+#include <engine/platform/measure_time.h>
 #include <engine/platform/shader.h>
 #include <external/glad/glad.h>
 #include <engine/platform/graphics.h>
@@ -6,7 +6,6 @@
 #include <engine/memory_pool.h>
 #include <engine/platform/window_data.h>
 #include <engine/platform/input.h>
-#include <assert.h>
 #include <game/game_loop.h>
 #include <engine/platform/game_loop.h>
 
@@ -15,7 +14,9 @@
 #include <engine/platform/file_io.h>
 #include <engine/platform/crossplatform_alloca.h>
 #include <engine/font.h>
+#include <engine/scene.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 #include <math.h>
@@ -30,8 +31,9 @@ void GameLoop() {
     FileData file;
     readEntireTextFile("../../assets/fonts/bdf/cherry-11-b.bdf", &file);
     Font f = InitializeFont(file);
-    printf("space needed for cherry-11-r.bdf = %llu\n", (llu) GetSizeForEntireFont(&f));
-    Font *font = alloca(GetSizeForEntireFont(&f));
+    llu fontSize = GetSizeForEntireFont(&f);
+    printf("space needed for cherry-11-r.bdf = %llu\n", fontSize);
+    Font *font = alloca(fontSize);
     *font = f;
     InitializeCharacterDataOntoFont(font, file);
     freeEntireTextFile(file);
@@ -61,8 +63,6 @@ void GameLoop() {
 
     // TODO: i have to somehow assert that i cannot use non ascii characters
     str s = "Jak Kuba Bogu tak Bog Kubie...";
-    // str s = "I wtedy dopiero zrozumialem ile $$ jestem w stanie zarobic piszac maile z konta paprykojad@gmail.com!";
-    // str s = "YAT";
     u32 bufsize = strlen(s) * 4 * 4 * sizeof(f32);
     printf("bufsize = %d\n", bufsize);
     f32* buf = alloca(bufsize);
@@ -70,10 +70,6 @@ void GameLoop() {
     u32 ebobufsize = strlen(s) * sizeof(u32) * 6;
     u32* ebobuf = alloca(ebobufsize);
 
-    // FillInFontTexture(s, strlen(s), font, buf);
-    // FillInScreenspacePosition(s, strlen(s), font, buf);
-    // FillInVertexIndexes(s, strlen(s), font, ebobuf);
-    //
     InitializeTextureCoordinatesBuffer(s, strlen(s), 3, font, buf, ebobuf);
 
     u32 VAO;
@@ -109,6 +105,7 @@ void GameLoop() {
 
 
     loc = glGetUniformLocation(FontShader, "offset");
+    printf("TOTAL_SIZE_FOR_TEXT_RENDERING = %lluMb %lluKb %llub\n", (llu)TOTAL_SIZE_FOR_TEXT_RENDERING/MB, (llu)((TOTAL_SIZE_FOR_TEXT_RENDERING%MB)/KB), (llu)(TOTAL_SIZE_FOR_TEXT_RENDERING%KB));
 
     WindowData* windowData = getRegion(WINDOW_DATA);
     windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
@@ -120,12 +117,13 @@ void GameLoop() {
         // handleGameEvents(table);
         // renderScene(table);
 
-        offset[1] = -1.0f-0.5f*sin(glfwGetTime());
+        offset[1] = -1.0f-sin(glfwGetTime());
         glUniform2fv(loc, 1, offset);
         glDrawElements(GL_TRIANGLES, strlen(s)*6, GL_UNSIGNED_INT, (void *) 0);
 
         updateBuffer();
         handleEngineEvents();
+
         windowData->framesElapsed++;
         MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
         windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
@@ -137,6 +135,7 @@ void GameLoop() {
     f64 fnsectosec = (f64)since.nsec/1000000000.f;
     f64 fsince = fsec + fnsectosec;
     f64 fps = (f64)frames/fsince;
+    printf("Amount of frames: %llu\n", (llu)frames);
     printf("Average fps: %f\n", fps);
     CloseWindow();
 }

@@ -15,6 +15,7 @@ set(ENGINE_SOURCES
 		src/area.c
 		src/memory_region_capacities.c
 		src/input.c
+		src/measure_time.c
 )
 
 if(UNIX)
