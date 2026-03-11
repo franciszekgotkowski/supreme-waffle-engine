@@ -37,8 +37,7 @@ void GameLoop() {
     *font = f;
     InitializeCharacterDataOntoFont(font, file);
     freeEntireTextFile(file);
-    stbi_write_png("./cherryfont.png", (i32) bitmapW(font), (i32) bitmapH(font), 1, font->characterBitmap,
-                   (i32) bitmapW(font));
+    // stbi_write_png("./cherryfont.png", (i32) bitmapW(font), (i32) bitmapH(font), 1, font->characterBitmap, (i32) bitmapW(font));
 
     ShaderProgramID FontShader = CreateShaderProgram("../../engine/src/shaders/font.vert",
                                                      "../../engine/src/shaders/font.frag");
@@ -109,6 +108,7 @@ void GameLoop() {
 
     WindowData* windowData = getRegion(WINDOW_DATA);
     windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
+    TimeStamp startDrawingStamp = InitializeTimeStamp();
     while (!((WindowData *) getRegion(WINDOW_DATA))->windowShouldClose) {
         clearScreen();
 
@@ -128,14 +128,18 @@ void GameLoop() {
         MatchFrametime(windowData->frametime, windowData->frametimeEveningTimeStamp);
         windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
     }
+
     u64 frames = windowData->framesElapsed;
     // TODO: probably some number overflow in PrintTimeSince on miliseconds
-    TimeStamp since = PrintTimeSince(windowData->bootTimeStamp);
+    TimeStamp since = PrintTimeSince(startDrawingStamp);
     f64 fsec = (f64)since.sec;
     f64 fnsectosec = (f64)since.nsec/1000000000.f;
     f64 fsince = fsec + fnsectosec;
     f64 fps = (f64)frames/fsince;
     printf("Amount of frames: %llu\n", (llu)frames);
     printf("Average fps: %f\n", fps);
+    TimeStamp loadTime = TimeDiff(startDrawingStamp, windowData->bootTimeStamp);
+    u64 loadTimeMs = loadTime.sec*1000000000 + loadTime.nsec;
+    printf("Initialization time: %llums %lluns\n", (llu)loadTimeMs/1000000, (llu)loadTimeMs%1000000);
     CloseWindow();
 }

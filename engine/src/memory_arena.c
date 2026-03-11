@@ -1,9 +1,14 @@
+#include <engine/typedefs.h>
 #include <engine/memory_pool.h>
 #include <engine/errors.h>
 #include <assert.h>
 #include <engine/memory_arena.h>
+#include <string.h>
 
-Error InitializeMemoryArena(void* base, u64 cap) {
+Error InitializeMemoryArena(
+	void* base,
+	u64 cap
+){
 	assert(base);
 
 	assert(!(cap < sizeof(MemoryArena)));
@@ -24,24 +29,39 @@ Error InitializeMemoryArena(void* base, u64 cap) {
 	return OK;
 }
 
-Error push_MemoryArena(MemoryArena* arena, u64 size) {
+void* push_MemoryArena(
+	MemoryArena* arena,
+	u64 size,
+	void* input,
+	Error* err
+){
 	assert(arena);
+	assert(err);
 
 	assert(!arena->locked);
 	if (arena->locked) {
-		return LOCKED;
+		*err = LOCKED;
+		return nullptr;
 	}
 
 	assert(size + arena->top <= arena->base);
 	if (size + arena->top > arena->base) {
-		return OUT_OF_MEMORY;
+		*err = OUT_OF_MEMORY;
+		return nullptr;
 	}
 
+	void* variableLocation = arena->top;
+	if (input != nullptr) {
+		memcpy(arena->top, input, size);
+	}
 	arena->top += size;
-	return OK;
+	*err = OK;
+	return variableLocation;
 }
 
-Error reset_MemoryArena(MemoryArena* arena) {
+Error reset_MemoryArena(
+	MemoryArena* arena
+) {
 	assert(arena);
 
 	assert(!arena->locked);
@@ -54,7 +74,10 @@ Error reset_MemoryArena(MemoryArena* arena) {
 	return OK;
 }
 
-Error addCheckpoint_MemoryArena(MemoryArena* arena, void* ptr) {
+Error addCheckpoint_MemoryArena(
+	MemoryArena* arena,
+	void* ptr
+) {
 	assert(arena);
 	assert(ptr);
 
@@ -73,12 +96,15 @@ Error addCheckpoint_MemoryArena(MemoryArena* arena, void* ptr) {
 		return OUT_OF_RANGE;
 	}
 
-	arena->checkpoints[arena->amountOfCheckpoints] = ptr;
+	arena->checkpoint[arena->amountOfCheckpoints] = ptr;
 	arena->amountOfCheckpoints += 1;
 	return OK;
 }
 
-Error returnToCheckpoint_MemoryArena(MemoryArena* arena, u64 idx) {
+Error returnToCheckpoint_MemoryArena(
+	MemoryArena* arena,
+	u64 idx
+) {
 	assert(arena);
 
 	assert(!arena->locked);
@@ -92,7 +118,7 @@ Error returnToCheckpoint_MemoryArena(MemoryArena* arena, u64 idx) {
 	}
 
 	arena->amountOfCheckpoints = idx+1;
-	arena->top = arena->checkpoints[idx];
+	arena->top = arena->checkpoint[idx];
 
 	return OK;
 }

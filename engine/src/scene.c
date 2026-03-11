@@ -1,3 +1,5 @@
+#include "engine/platform/graphics.h"
+#include "engine/platform/input.h"
 #include <engine/errors.h>
 #include <assert.h>
 #include <engine/memory_pool.h>
@@ -11,8 +13,24 @@ Error InitializeScene(
 	str uiPath,
 	str areaPath
 ) {
-	assert(0);
-	return LOGIC_ERROR;
+	assert(sceneData);
+	assert(uiPath);
+	assert(areaPath);
+	assert(sizeof(SceneData) <= size);
+
+	*sceneData = (SceneData){
+		.capacity = size - sizeof(SceneData),
+		.data = (void*)(sceneData + 1),
+		.stackTop = (void*)(sceneData + 1),
+		.amountOfAssets = 0,
+		.amountOfGameObjects = 0
+	};
+
+	// TODO
+	// loadUi()
+	// loadArea()
+
+	return OK;
 }
 
 Error LoadGameScene(
@@ -47,4 +65,64 @@ Error LoadLoadingScreenScene(
 	);
 
 	return OK;
+}
+
+AssetID RegisterNewAsset(
+	SceneData *sceneData,
+	u64 size,
+	Error *err
+) {
+	assert(sceneData);
+	assert(err);
+
+	if (sceneData->amountOfAssets >= MAXIMUM_AMOUNT_OF_ASSETS_IN_SCENE) {
+		*err = OUT_OF_INDEXES;
+		return 0;
+	}
+
+	if (sceneData->stackTop > sceneData->data + sceneData->capacity) {
+		*err = OUT_OF_MEMORY;
+		return 0;
+	}
+
+	sceneData->asset[sceneData->amountOfAssets] = (Asset){
+		.ptr = sceneData->stackTop,
+		.size = size
+	};
+
+	sceneData->amountOfAssets += 1;
+	sceneData->stackTop += size;
+
+	*err = OK;
+	return sceneData->amountOfAssets - 1;
+}
+
+GameObjectID RegisterNewGameObject(
+	SceneData *sceneData,
+	u64 size,
+	Error *err
+) {
+	assert(sceneData);
+	assert(err);
+
+	if (sceneData->amountOfGameObjects >= MAXIMUM_AMOUNT_OF_GAME_OBJECTS_IN_SCENE) {
+		*err = OUT_OF_INDEXES;
+		return 0;
+	}
+
+	if (sceneData->stackTop > sceneData->data + sceneData->capacity) {
+		*err = OUT_OF_MEMORY;
+		return 0;
+	}
+
+	sceneData->gameObject[sceneData->amountOfGameObjects] = (GameObject){
+		.ptr = sceneData->stackTop,
+		.size = size
+	};
+
+	sceneData->amountOfGameObjects += 1;
+	sceneData->stackTop += size;
+
+	*err = OK;
+	return sceneData->amountOfGameObjects - 1;
 }

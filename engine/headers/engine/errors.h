@@ -12,6 +12,7 @@ typedef enum {
     FILE_NOT_FOUND,
     IO_ERROR,
     INVALID_INPUT,
+    OUT_OF_INDEXES,
 
     AMOUNT_OF_ERRORS
 } Error ;

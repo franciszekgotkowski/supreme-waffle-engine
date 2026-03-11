@@ -13,7 +13,7 @@ set(CMAKE_CONFIGURATION_TYPES
 )
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
-set(CMAKE_C_FLAGS_DEBUG "-g -O0")
+set(CMAKE_C_FLAGS_DEBUG "-g -O0 -pg")
 set(CMAKE_C_FLAGS_RELEASE "-O3 -Wno-unused-but-set-variable -Wno-unused-variable")
 
 set(CMAKE_BUILD_TYPE Debug)
