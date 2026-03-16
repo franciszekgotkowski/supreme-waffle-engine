@@ -16,6 +16,7 @@ set(ENGINE_SOURCES
 		src/memory_region_capacities.c
 		src/input.c
 		src/measure_time.c
+		src/text_rendering.c
 )
 
 if(UNIX)

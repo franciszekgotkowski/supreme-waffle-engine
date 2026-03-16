@@ -1,13 +1,15 @@
 #pragma once
 
-#include "engine/errors.h"
+#include <engine/errors.h>
 #include <engine/memory_pool.h>
 
 #include <engine/ui.h>
 #include <engine/area.h>
 #include <engine/typedefs.h>
 #include <engine/platform/memory_allocations.h>
+#include <engine/text_rendering.h>
 
+// MEMORY REGION DEFINES
 #define SCENE_FILES_LOCATION "../../assets/scene/"
 #define SIZEOF_XS_SCENE (5*MB)
 #define SIZEOF_S_SCENE (25*MB)
@@ -17,32 +19,6 @@
 
 #define SIZEOF_LARGEST_SCENE SIZEOF_XL_SCENE
 #define SIZEOF_LOADING_SCREEN_SCENE SIZEOF_S_SCENE
-
-#define MAX_AMOUNT_OF_FONTS_PER_SCENE 10
-#define SIZEOF_MEMORY_FOR_FONTS (MAX_AMOUNT_OF_FONTS_PER_SCENE*(KB*50))
-
-#define MAX_AMOUNT_OF_CHARS_PER_SCENE (10*KB)
-#define MAX_AMOUNT_OF_LINES_IN_SCENE (1*KB)
-
-#define MAX_SIZE_FOR_TEXT (MAX_AMOUNT_OF_CHARS_PER_SCENE*sizeof(char))
-#define MAX_SIZE_FOR_LINE_OFFSETS (MAX_AMOUNT_OF_LINES_IN_SCENE*sizeof(u32)*2)
-#define MAX_SIZE_FOR_LINE_COLORS (MAX_AMOUNT_OF_LINES_IN_SCENE*sizeof(u8)*4)
-#define MAX_SIZE_FOR_LINE_SIZES (MAX_AMOUNT_OF_LINES_IN_SCENE*sizeof(u32))
-
-// ilość charów *
-// floaty dla xy dla koordynatów na ekranie + koordynatów tekstury
-// + indeksy EBO
-#define MAX_SIZE_FOR_CHARACTER_RENDER_DATA (MAX_AMOUNT_OF_CHARS_PER_SCENE*\
-	(sizeof(f32)*2*4*2+\
-	sizeof(u32)*6))
-
-// How much space is needed for text rendering (for text but also memory needed for rendering)
-#define TOTAL_SIZE_FOR_TEXT_RENDERING (\
-	MAX_SIZE_FOR_TEXT+\
-	MAX_SIZE_FOR_LINE_OFFSETS+\
-	MAX_SIZE_FOR_LINE_COLORS+\
-	MAX_SIZE_FOR_LINE_SIZES+\
-	MAX_SIZE_FOR_CHARACTER_RENDER_DATA)
 
 // Assets are meant for storing asset data like textures, meshes, font data etc.
 // They are not meant to store any data about objects in current scene

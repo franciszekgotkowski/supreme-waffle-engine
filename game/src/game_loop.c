@@ -62,7 +62,7 @@ void GameLoop() {
 	ptr += sizeof(char)*(strlen(ptr)+1);
 
 	f32* buf = ptr;
-	u32 bufsize = (strlen(s)+1) * 4 * 4 * sizeof(f32);
+	u32 bufsize = (strlen(s)+1) * 5 * 4 * sizeof(f32);
 	ptr += bufsize;
 
 	u32* ebobuf = ptr;
@@ -112,9 +112,9 @@ void GameLoop() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebobufsize, ebobuf, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void *) 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(f32), (void *) 0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(f32), (void *) (2 * sizeof(f32)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(f32), (void *) (2 * sizeof(f32)));
 
 
 	UseShaderProgram(FontShader);

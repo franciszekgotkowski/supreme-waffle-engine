@@ -163,6 +163,23 @@ void InitializeTextureCoordinatesBuffer(
 	u32* EBO_out
 );
 
+//DATA LAYOUT IN VERTEX BUFFER:
+// first character:
+// 		bottom left egde:
+// 			f32 screenspace pos x
+// 			f32 screenspace pos y
+// 			f32 uv position x
+// 			f32 uv pos y
+// 			u32 index of line
+// 		bottom right egde:
+//			...
+// 		top right egde:
+// 			...
+// 		top left egde:
+// 			...
+// second character:
+// ....
+
 // fill in data under array with screenspace positions of characters
 void FillInScreenspacePosition(
 	str sourceString,
@@ -181,7 +198,7 @@ void FillInFontTexture(
 );
 
 // fills in indexes for ebo
-void FillInVertexIndexes(
+void FillInVertexIndicies(
 	str sourceString,
 	u32 stringLength,
 	Font* font,
