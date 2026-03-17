@@ -19,6 +19,8 @@
 #include <assert.h>
 #include <string.h>
 
+#include <engine/text_rendering.h>
+
 #include <math.h>
 #include <external/glfw3.h>
 
@@ -49,27 +51,63 @@ void GameLoop() {
 
 
 
-	GameObjectID gameObjectID = RegisterNewGameObject(
+	GameObjectID TextID = RegisterNewGameObject(
 		sceneData,
 		MAX_SIZE_FOR_CHARACTER_RENDER_DATA,
 		&err
 	);
 	assert(err == OK);
 
-	str s = "Jak Kuba Bogu tak Bog Kubie...";
-	void* ptr = sceneData->gameObject[gameObjectID].ptr;
-	strcpy(ptr, s);
-	ptr += sizeof(char)*(strlen(ptr)+1);
+	str s = "!!!?  Jak Kuba Bogu tak Bog Kubie...";
 
-	f32* buf = ptr;
-	u32 bufsize = (strlen(s)+1) * 5 * 4 * sizeof(f32);
-	ptr += bufsize;
+	err = InitializeTextRenderingObject(
+		TextID,
+		sceneData
+	);
+	assert(err == OK);
 
-	u32* ebobuf = ptr;
-	u32 ebobufsize = (strlen(s)+1) * sizeof(u32) * 6;
-	ptr += ebobufsize;
+	err = AppendNewLine(
+		s,
+		strlen(s),
+		sceneData->gameObject[TextID].ptr,
+		sceneData->asset[CherryFontID].ptr,
+		(v2){
+			.x = 0.0f,
+			.y = 0.0f,
+		},
+		(Color){
+			.r = 255,
+			.g = 51,
+			.b = 128,
+			.a = 255
+		},
+		3
+	);
+	assert(err == OK);
 
-	InitializeTextureCoordinatesBuffer(s, strlen(s), 3, font, buf, ebobuf);
+	TextData* textData = sceneData->gameObject[TextID].ptr;
+
+	// void* ptr = sceneData->gameObject[gameObjectID].ptr;
+	// strcpy(ptr, s);
+	// ptr += sizeof(char)*(strlen(ptr)+1);
+
+	// f32* buf = ptr;
+	// u32 bufsize = (strlen(s)+1) * 5 * 4 * sizeof(f32);
+	// ptr += bufsize;
+
+	// u32* ebobuf = ptr;
+	// u32 ebobufsize = (strlen(s)+1) * sizeof(u32) * 6;
+	// ptr += ebobufsize;
+
+	// InitializeTextureCoordinatesBuffer(
+	// 	s,
+	// 	strlen(s),
+	// 	3,
+	// 	3,
+	// 	font,
+	// 	buf,
+	// 	ebobuf
+	// );
 // END OF TEMP CODE
 
 
@@ -106,10 +144,10 @@ void GameLoop() {
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, bufsize, buf, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, SpaceNeededForVBO(textData->amountOfCharacters), textData->verticiesStart, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, ebobufsize, ebobuf, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, SpaceNeededForEBO(textData->amountOfCharacters), textData->indiciesStart, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(f32), (void *) 0);

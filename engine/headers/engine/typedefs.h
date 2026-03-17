@@ -70,3 +70,5 @@ typedef union {
 #else
 	#define DEBUG_ONLY(CONTENT);
 #endif
+
+#define NOT_COMPLETED 0

@@ -2,6 +2,9 @@
 
 #include <engine/typedefs.h>
 #include <engine/platform/memory_allocations.h>
+#include <engine/errors.h>
+#include <engine/scene.h>
+#include <engine/font.h>
 #include <stdbool.h>
 
 #define MAX_AMOUNT_OF_CHARS_PER_SCENE (10*KB)
@@ -67,7 +70,7 @@ typedef struct {
 	u32 scale;
 
 	mstr* textPtr;
-	void* veticiesPtr;
+	void* verticiesPtr;
 	void* indiciesPtr;
 	u32 letterCount;
 
@@ -79,6 +82,7 @@ typedef struct {
 
 	Line line[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	u32 amountOfLines;
+	u32 amountOfCharacters;
 
 	u64 textCapacity;
 	void* textStart;
@@ -94,6 +98,24 @@ typedef struct {
 } TextData;
 
 // Initializes memory regions (asset and gameObject) for text rendering
-void InitializeTextRenderingObject(
-	void* base // input pointer
+Error InitializeTextRenderingObject(
+	u32 gameObjectIdx,
+	SceneData* sceneData
+);
+
+// function appends new line into text game object
+// Line lenght should not include \0 character because it will not be displayed anyway
+// Function can return errors:
+// 		OUT_OF_MEMORY - if scene cannot accomodate those characters
+// 		OUT_OF_INDEXES - if scene cannot accomodate this line
+// 		OK
+Error AppendNewLine(
+	str line,
+	u32 letterCount,
+	TextData* textData,
+
+	Font* font,
+	v2 offset,
+	Color color,
+	u32 scale
 );

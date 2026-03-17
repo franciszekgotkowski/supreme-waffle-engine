@@ -7,7 +7,6 @@
 #include <engine/area.h>
 #include <engine/typedefs.h>
 #include <engine/platform/memory_allocations.h>
-#include <engine/text_rendering.h>
 
 // MEMORY REGION DEFINES
 #define SCENE_FILES_LOCATION "../../assets/scene/"

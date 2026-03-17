@@ -3,7 +3,6 @@
 #include <engine/platform/measure_time.h>
 
 #include <assert.h>
-#include <stdio.h>
 #include <time.h>
 
 extern PointerTable* GameMemory;

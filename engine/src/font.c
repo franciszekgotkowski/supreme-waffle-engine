@@ -631,6 +631,7 @@ v2 GetCharacterDOffset(
 const u32 vertexStride = 5;
 const u32 characterStride = vertexStride * 4;
 const u32 uvOffset = 2;
+const u32 LineIdxOffset = 4;
 
 void FillInFontTexture(
 	str sourceString,
@@ -772,28 +773,44 @@ out[characterStride * i + 3*vertexStride + 1] = screenspacePos.y;
 void FillInVertexIndicies(
 	str sourceString,
 	u32 stringLength,
-	Font* font,
+	u32 amountOfExistingLetters,
 	u32* out // array bo filled in
 ) {
 
-	assert(font);
 	assert(sourceString);
 	assert(out);
 
+	const u32 indexToAdd = amountOfExistingLetters * 6;
+
 	for range(i, stringLength) {
-	out[6 * i + 0] = i * 4 + 0;
-	out[6 * i + 1] = i * 4 + 1;
-	out[6 * i + 2] = i * 4 + 3;
-	out[6 * i + 3] = i * 4 + 1;
-	out[6 * i + 4] = i * 4 + 2;
-	out[6 * i + 5] = i * 4 + 3;
+		out[6 * i + 0] = i * 4 + 0 + indexToAdd;
+		out[6 * i + 1] = i * 4 + 1 + indexToAdd;
+		out[6 * i + 2] = i * 4 + 3 + indexToAdd;
+		out[6 * i + 3] = i * 4 + 1 + indexToAdd;
+		out[6 * i + 4] = i * 4 + 2 + indexToAdd;
+		out[6 * i + 5] = i * 4 + 3 + indexToAdd;
+	}
 }
+
+void FillInLineIndicies(
+	u32 stringLength,
+	u32 lineIdx,
+	u32* out // array to be filled in
+) {
+	assert(out);
+
+	u32* needle = out + LineIdxOffset;
+	for range(i, stringLength) {
+		*needle = lineIdx;
+		needle += vertexStride;
+	}
 }
 
 void InitializeTextureCoordinatesBuffer(
 	str sourceString, // ascii line to generate
 	u32 stringLength,
 	u32 fontScale,
+	u32 lineIdx,
 	Font* font, // font to look up to
 	f32* VBO_out,
 	u32* EBO_out
@@ -817,11 +834,30 @@ void InitializeTextureCoordinatesBuffer(
 		VBO_out
 	);
 
+	FillInLineIndicies(
+		stringLength,
+		lineIdx,
+		(u32*)VBO_out
+	);
+
 	FillInVertexIndicies(
 		sourceString,
 		stringLength,
-		font,
+		0,
 		EBO_out
 	);
+}
 
+// how many bytes will VBO occupy
+u32 SpaceNeededForVBO(
+	u32 stringLenght
+) {
+	return characterStride * sizeof(f32) * stringLenght;
+}
+
+// how many bytes will EBO occupy
+u32 SpaceNeededForEBO(
+	u32 stringLenght
+) {
+	return 6 * sizeof(u32) * stringLenght;
 }

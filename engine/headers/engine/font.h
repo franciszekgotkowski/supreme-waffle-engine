@@ -158,6 +158,7 @@ void InitializeTextureCoordinatesBuffer(
 	str sourceString, // ascii line to generate
 	u32 stringLength,
 	u32 fontScale, // by how much should font be scaled
+	u32 lineIdx,
 	Font* font, // font to look up to
 	f32* VBO_out,
 	u32* EBO_out
@@ -197,10 +198,27 @@ void FillInFontTexture(
 	f32* out // array to be filled in
 );
 
+// fills in line index for vbo
+void FillInLineIndicies(
+	u32 stringLength,
+	u32 lineIdx,
+	u32* out // array to be filled in
+);
+
 // fills in indexes for ebo
 void FillInVertexIndicies(
 	str sourceString,
 	u32 stringLength,
-	Font* font,
+	u32 amountOfExistingLetters,
 	u32* out // array to be filled in
+);
+
+// how many bytes will VBO occupy
+u32 SpaceNeededForVBO(
+	u32 stringLenght
+);
+
+// how many bytes will EBO occupy
+u32 SpaceNeededForEBO(
+	u32 stringLenght
 );
