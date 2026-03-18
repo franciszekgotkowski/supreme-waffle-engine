@@ -154,7 +154,7 @@ void GameLoop() {
 	GLint TextureLocation = glGetUniformLocation(FontShader, "FontTexture");
 	glUniform1i(TextureLocation, 0);
 	GLint ColorLocation = glGetUniformLocation(FontShader, "fontColor");
-	glUniform3fv(TextureLocation, 1, textData->line[0].color.rgb);
+	glUniform3fv(TextureLocation, 1, textData->linesData.color[0].rgb);
 	glBindVertexArray(VAO);
 
 
@@ -172,10 +172,11 @@ void GameLoop() {
 		// handleGameEvents(table);
 		// renderScene(table);
 
-		textData->line[0].offset.y = -1.0f-sin(glfwGetTime());
-		glUniform2fv(OffsetLocation, 1, textData->line[0].offset.arr);
-		textData->line[0].color.g = 0.5f+0.5f*sin(10*glfwGetTime());
-		glUniform3fv(ColorLocation, 1, textData->line[0].color.rgb);
+		// textData->line[0].offset.y = -1.0f-sin(glfwGetTime());
+		textData->linesData.offset[0].y = -1.0f-sin(glfwGetTime());
+		glUniform2fv(OffsetLocation, 1, textData->linesData.offset[0].arr);
+		textData->linesData.color[0].g = 0.5f+0.5f*sin(10*glfwGetTime());
+		glUniform3fv(ColorLocation, 1, textData->linesData.color[0].rgb);
 		// glUniform2fv(loc, 1, offset);
 		u32 m = textData->amountOfCharacters;
 		glDrawElements(GL_TRIANGLES, m*6, GL_UNSIGNED_INT, (void *) 0);

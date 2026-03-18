@@ -62,44 +62,59 @@ Error AppendNewLine(
 		return OUT_OF_MEMORY;
 	}
 
-	textData->line[textData->amountOfLines] = (Line){
-		.offset = offset,
-		.color = color,
-		.scale = scale,
+	textData->linesData.offset[textData->amountOfLines] = offset;
+	textData->linesData.color[textData->amountOfLines] = color;
+	textData->linesData.scale[textData->amountOfLines] = scale;
 
-		.textPtr = textData->textTop,
-		.verticiesPtr = textData->verticiesTop,
-		.indiciesPtr = textData->indiciesTop,
+	textData->linesData.textPtr[textData->amountOfLines] = textData->textTop;
+	textData->linesData.verticiesPtr[textData->amountOfLines] = textData->verticiesTop;
+	textData->linesData.indiciesPtr[textData->amountOfLines] = textData->indiciesTop;
 
-		.letterCount = letterCount,
-		.shouldDraw = true
-	};
+	textData->linesData.letterCount[textData->amountOfLines] = letterCount;
+	textData->linesData.shouldDraw[textData->amountOfLines] = true;
+
+	// textData->line[textData->amountOfLines] = (Line){
+	// 	.offset = offset,
+	// 	.color = color,
+	// 	.scale = scale,
+
+	// 	.textPtr = textData->textTop,
+	// 	.verticiesPtr = textData->verticiesTop,
+	// 	.indiciesPtr = textData->indiciesTop,
+
+	// 	.letterCount = letterCount,
+	// 	.shouldDraw = true
+	// };
 
 	FillInScreenspacePosition(
 		sourceString,
 		letterCount,
 		scale,
 		font,
-		textData->line[textData->amountOfLines].verticiesPtr
+		// textData->line[textData->amountOfLines].verticiesPtr
+		textData->linesData.verticiesPtr[textData->amountOfLines]
 	);
 
 	FillInFontTexture(
 		sourceString,
 		letterCount,
 		font,
-		textData->line[textData->amountOfLines].verticiesPtr
+		// textData->line[textData->amountOfLines].verticiesPtr
+		textData->linesData.verticiesPtr[textData->amountOfLines]
 	);
 
 	FillInLineIndicies(
 		letterCount,
 		textData->amountOfLines,
-		(u32*)textData->line[textData->amountOfLines].verticiesPtr
+		// (u32*)textData->line[textData->amountOfLines].verticiesPtr
+		(u32*)textData->linesData.verticiesPtr[textData->amountOfLines]
 	);
 
 	FillInVertexIndicies(
 		letterCount,
 		textData->amountOfCharacters,
-		textData->line[textData->amountOfLines].indiciesPtr
+		// textData->line[textData->amountOfLines].indiciesPtr
+		textData->linesData.indiciesPtr[textData->amountOfLines]
 	);
 
 	memcpy(textData->textTop, sourceString, letterCount);

@@ -64,24 +64,38 @@ typedef union {
 	f32 rgb[3];
 } Color ;
 
-// contains data for each line
+// // contains data for each line
+// typedef struct {
+// 	v2 offset;
+// 	Color color;
+// 	u32 scale;
+
+// 	mstr* textPtr;
+// 	void* verticiesPtr;
+// 	void* indiciesPtr;
+// 	u32 letterCount;
+
+// 	bool shouldDraw;
+// } Line ;
+
 typedef struct {
-	v2 offset;
-	Color color;
-	u32 scale;
+	v2 offset[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	Color color[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	u32 scale[MAX_AMOUNT_OF_LINES_IN_SCENE];
 
-	mstr* textPtr;
-	void* verticiesPtr;
-	void* indiciesPtr;
-	u32 letterCount;
+	mstr* textPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	void* verticiesPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	void* indiciesPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	u32 letterCount[MAX_AMOUNT_OF_LINES_IN_SCENE];
 
-	bool shouldDraw;
-} Line ;
+	bool shouldDraw[MAX_AMOUNT_OF_LINES_IN_SCENE];
+} LinesData ;
 
 typedef struct {
 	u64 totalCapacity;
 
-	Line line[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	// Line line[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	LinesData linesData;
 	u32 amountOfLines;
 	u32 amountOfCharacters;
 
