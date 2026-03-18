@@ -1,5 +1,3 @@
-#pragma once
-
 #include <engine/typedefs.h>
 #include <engine/platform/memory_allocations.h>
 #include <engine/errors.h>
@@ -82,13 +80,12 @@ typedef struct {
 	v2 offset[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	Color color[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	u32 scale[MAX_AMOUNT_OF_LINES_IN_SCENE];
+	bool shouldDraw[MAX_AMOUNT_OF_LINES_IN_SCENE];
 
 	mstr* textPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	void* verticiesPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	void* indiciesPtr[MAX_AMOUNT_OF_LINES_IN_SCENE];
 	u32 letterCount[MAX_AMOUNT_OF_LINES_IN_SCENE];
-
-	bool shouldDraw[MAX_AMOUNT_OF_LINES_IN_SCENE];
 } LinesData ;
 
 typedef struct {

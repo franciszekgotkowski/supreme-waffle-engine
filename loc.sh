@@ -9,4 +9,4 @@ TARGET_DIRS=(
 )
 
 # Use find to locate .c and .h files and pass them to wc -l
-find "${TARGET_DIRS[@]}" -type f \( -name "*.c" -o -name "*.h" \) -exec wc -l {} +
+find "${TARGET_DIRS[@]}" -type f \( -name "*.c" -o -name "*.h" -o -name "*.vert" -o -name "*.frag" \) -exec wc -l {} +
