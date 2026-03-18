@@ -771,13 +771,11 @@ out[characterStride * i + 3*vertexStride + 1] = screenspacePos.y;
 
 // fills in indexes for ebo
 void FillInVertexIndicies(
-	str sourceString,
 	u32 stringLength,
 	u32 amountOfExistingLetters,
 	u32* out // array bo filled in
 ) {
 
-	assert(sourceString);
 	assert(out);
 
 	const u32 indexToAdd = amountOfExistingLetters * 6;
@@ -800,7 +798,7 @@ void FillInLineIndicies(
 	assert(out);
 
 	u32* needle = out + LineIdxOffset;
-	for range(i, stringLength) {
+	for range(i, stringLength*4) {
 		*needle = lineIdx;
 		needle += vertexStride;
 	}
@@ -841,7 +839,6 @@ void InitializeTextureCoordinatesBuffer(
 	);
 
 	FillInVertexIndicies(
-		sourceString,
 		stringLength,
 		0,
 		EBO_out

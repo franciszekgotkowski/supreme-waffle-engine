@@ -97,7 +97,6 @@ Error AppendNewLine(
 	);
 
 	FillInVertexIndicies(
-		sourceString,
 		letterCount,
 		textData->amountOfCharacters,
 		textData->line[textData->amountOfLines].indiciesPtr

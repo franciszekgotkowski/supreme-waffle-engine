@@ -55,12 +55,13 @@
 
 typedef union {
 	struct {
-		u8 r;
-		u8 g;
-		u8 b;
-		u8 a;
+		f32 r;
+		f32 g;
+		f32 b;
+		f32 a;
 	};
-	u8 rgba[4];
+	f32 rgba[4];
+	f32 rgb[3];
 } Color ;
 
 // contains data for each line

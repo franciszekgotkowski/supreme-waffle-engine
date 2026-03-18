@@ -50,7 +50,6 @@ void GameLoop() {
 	freeEntireTextFile(file);
 
 
-
 	GameObjectID TextID = RegisterNewGameObject(
 		sceneData,
 		MAX_SIZE_FOR_CHARACTER_RENDER_DATA,
@@ -58,14 +57,36 @@ void GameLoop() {
 	);
 	assert(err == OK);
 
-	str s = "!!!?  Jak Kuba Bogu tak Bog Kubie...";
-
 	err = InitializeTextRenderingObject(
 		TextID,
 		sceneData
 	);
 	assert(err == OK);
 
+	TextData* textData = sceneData->gameObject[TextID].ptr;
+
+	str s2 = "o-o-o-o";
+	err = AppendNewLine(
+		s2,
+		strlen(s2),
+		sceneData->gameObject[TextID].ptr,
+		sceneData->asset[CherryFontID].ptr,
+		(v2){
+			.x = 0.0f,
+			.y = 0.0f,
+		},
+		(Color){
+			.r = 1.0f,
+			.g = 0.7f,
+			.b = 0.1f,
+			.a = 1.0f
+		},
+		8
+	);
+	assert(err == OK);
+
+
+	str s = "......Jak Kuba Bogu tak Bog Kubie...";
 	err = AppendNewLine(
 		s,
 		strlen(s),
@@ -76,42 +97,14 @@ void GameLoop() {
 			.y = 0.0f,
 		},
 		(Color){
-			.r = 255,
-			.g = 51,
-			.b = 128,
-			.a = 255
+			.r = 1.0f,
+			.g = 0.2f,
+			.b = 0.5f,
+			.a = 1.0f
 		},
 		3
 	);
 	assert(err == OK);
-
-	TextData* textData = sceneData->gameObject[TextID].ptr;
-
-	// void* ptr = sceneData->gameObject[gameObjectID].ptr;
-	// strcpy(ptr, s);
-	// ptr += sizeof(char)*(strlen(ptr)+1);
-
-	// f32* buf = ptr;
-	// u32 bufsize = (strlen(s)+1) * 5 * 4 * sizeof(f32);
-	// ptr += bufsize;
-
-	// u32* ebobuf = ptr;
-	// u32 ebobufsize = (strlen(s)+1) * sizeof(u32) * 6;
-	// ptr += ebobufsize;
-
-	// InitializeTextureCoordinatesBuffer(
-	// 	s,
-	// 	strlen(s),
-	// 	3,
-	// 	3,
-	// 	font,
-	// 	buf,
-	// 	ebobuf
-	// );
-// END OF TEMP CODE
-
-
-
 
 
 	ShaderProgramID FontShader = CreateShaderProgram("../../engine/src/shaders/font.vert",
@@ -157,17 +150,15 @@ void GameLoop() {
 
 	UseShaderProgram(FontShader);
 
-	f32 offset[2] = {0.0f, 0.0f};
 	glBindTexture(GL_TEXTURE_2D, textureID);
-	GLint loc = glGetUniformLocation(FontShader, "FontTexture");
-	glUniform1i(loc, 0);
-	loc = glGetUniformLocation(FontShader, "fontColor");
-	f32 color[3] = {1.0f, 0.5f, 0.2f};
-	glUniform3fv(loc, 1, color);
+	GLint TextureLocation = glGetUniformLocation(FontShader, "FontTexture");
+	glUniform1i(TextureLocation, 0);
+	GLint ColorLocation = glGetUniformLocation(FontShader, "fontColor");
+	glUniform3fv(TextureLocation, 1, textData->line[0].color.rgb);
 	glBindVertexArray(VAO);
 
 
-	loc = glGetUniformLocation(FontShader, "offset");
+	GLint OffsetLocation = glGetUniformLocation(FontShader, "offset");
 	printf("TOTAL_SIZE_FOR_TEXT_RENDERING = %lluMb %lluKb %llub\n", (llu)TOTAL_SIZE_FOR_TEXT_RENDERING/MB, (llu)((TOTAL_SIZE_FOR_TEXT_RENDERING%MB)/KB), (llu)(TOTAL_SIZE_FOR_TEXT_RENDERING%KB));
 
 	WindowData* windowData = getRegion(WINDOW_DATA);
@@ -181,9 +172,13 @@ void GameLoop() {
 		// handleGameEvents(table);
 		// renderScene(table);
 
-		offset[1] = -1.0f-sin(glfwGetTime());
-		glUniform2fv(loc, 1, offset);
-		glDrawElements(GL_TRIANGLES, strlen(s)*6, GL_UNSIGNED_INT, (void *) 0);
+		textData->line[0].offset.y = -1.0f-sin(glfwGetTime());
+		glUniform2fv(OffsetLocation, 1, textData->line[0].offset.arr);
+		textData->line[0].color.g = 0.5f+0.5f*sin(10*glfwGetTime());
+		glUniform3fv(ColorLocation, 1, textData->line[0].color.rgb);
+		// glUniform2fv(loc, 1, offset);
+		u32 m = textData->amountOfCharacters;
+		glDrawElements(GL_TRIANGLES, m*6, GL_UNSIGNED_INT, (void *) 0);
 
 		updateBuffer();
 		handleEngineEvents();

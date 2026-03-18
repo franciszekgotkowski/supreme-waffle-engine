@@ -207,7 +207,6 @@ void FillInLineIndicies(
 
 // fills in indexes for ebo
 void FillInVertexIndicies(
-	str sourceString,
 	u32 stringLength,
 	u32 amountOfExistingLetters,
 	u32* out // array to be filled in
