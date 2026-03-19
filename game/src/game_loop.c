@@ -35,6 +35,7 @@ void GameLoop() {
 // TEMP CODE
 	FileData file;
 	readEntireTextFile("../../assets/fonts/bdf/cherry-11-b.bdf", &file);
+	// readEntireTextFile("../../assets/fonts/bdf/t0-16.bdf", &file);
 
 	SceneData* sceneData = (SceneData*)getRegion(LOADING_SCREEN_SCENE);
 	AssetID CherryFontID = RegisterNewAsset(
@@ -48,6 +49,7 @@ void GameLoop() {
 	*font =  InitializeFont(file);
 	InitializeCharacterDataOntoFont(font, file);
 	freeEntireTextFile(file);
+	// printf("Font size in bytes: %llu\n", (llu)GetSizeForEntireFont(font));
 
 
 	GameObjectID TextID = RegisterNewGameObject(

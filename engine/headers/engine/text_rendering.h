@@ -9,7 +9,8 @@
 #define MAX_AMOUNT_OF_LINES_IN_SCENE (1*KB)
 
 #define MAX_AMOUNT_OF_FONTS_PER_SCENE 10
-#define SIZEOF_MEMORY_FOR_FONTS (MAX_AMOUNT_OF_FONTS_PER_SCENE*(KB*50))
+#define MAX_SIZE_FOR_SINGLE_FONT (KB*50)
+#define SIZEOF_MEMORY_FOR_FONTS (MAX_AMOUNT_OF_FONTS_PER_SCENE*MAX_SIZE_FOR_SINGLE_FONT)
 
 // TEXT DEFINES
 #define MAX_SIZE_FOR_TEXT (MAX_AMOUNT_OF_CHARS_PER_SCENE*sizeof(char))
@@ -130,4 +131,8 @@ Error AppendNewLine(
 	v2 offset,
 	Color color,
 	u32 scale
+);
+
+void DeleteLine(
+	u32 lineIdx
 );

@@ -35,7 +35,9 @@ int main() {
        	60,
         false,
         false,
-        (v4){.arr = {0.18f, 0.20f, 0.25f, 1.0f}},
+        (v4){
+            .arr = {0.18f, 0.20f, 0.25f, 1.0f}
+        },
         "Der Spiel!",
         CURSOR_NORMAL
     );
