@@ -4,8 +4,14 @@
 TARGET_DIRS=(
   "engine/src"
   "engine/headers/engine"
-  "game/src"
-  "game/headers/game"
+  "playground/src"
+  "playground/headers/playground"
+  "common/src"
+  "common/headers/common"
+  "platform/src"
+  "platform/shaders"
+  "platform/headers/export"
+  "platform/headers/internal"
 )
 
 # Use find to locate .c and .h files and pass them to wc -l
