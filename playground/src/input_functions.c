@@ -1,6 +1,6 @@
 #include <engine/memory_pool.h>
 #include <engine/window.h>
-#include <game/input_functions.h>
+#include <playground/input_functions.h>
 #include <engine/handle_input.h>
 
 #include <assert.h>

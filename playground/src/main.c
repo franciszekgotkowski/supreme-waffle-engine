@@ -9,7 +9,7 @@
 #include <engine/handle_input.h>
 #include <engine/game_loop.h>
 #include <engine/window.h>
-#include <game/input_functions.h>
+#include <playground/input_functions.h>
 #include <common/cursor_modes.h>
 
 #include <stdbool.h>

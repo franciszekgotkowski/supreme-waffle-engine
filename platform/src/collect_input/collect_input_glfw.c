@@ -7,7 +7,6 @@
 #include <export/platform/collect_input.h>
 #include <external/glfw3.h>
 
-#include "../../../engine/headers/engine/memory_pool.h"
 
 extern InputData* inputData;
 extern WindowData* windowData;

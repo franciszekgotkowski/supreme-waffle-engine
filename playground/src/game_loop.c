@@ -1,10 +1,10 @@
 #include <platform/measure_time.h>
 #include <platform/shader.h>
 #include <platform/graphics.h>
-#include <game/input_functions.h>
+#include <playground/input_functions.h>
 #include <engine/memory_pool.h>
 #include <engine/window.h>
-#include <game/game_loop.h>
+#include <playground/game_loop.h>
 #include <engine/game_loop.h>
 
 #include <platform/file_io.h>
