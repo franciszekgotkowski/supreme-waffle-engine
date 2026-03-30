@@ -20,6 +20,7 @@ target_include_directories(playground PRIVATE
 target_link_directories(playground PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/libs/dynamic
 		${CMAKE_CURRENT_SOURCE_DIR}/libs/static
+
 		${CMAKE_HOME_DIRECTORY}/engine/libs/static
 
 #		ONLY FOR DEBUG PURPOSES
@@ -30,7 +31,6 @@ target_link_directories(playground PRIVATE
 
 target_link_libraries(playground PRIVATE
 		engine
-		glfw3
 		platform
 		common
 )

@@ -1,5 +1,5 @@
 #include <common/typedefs.h>
-#include <platform/measure_time.h>
+#include <export/platform/measure_time.h>
 
 #include <stdio.h>
 #include <assert.h>
@@ -26,6 +26,12 @@ inline TimeStamp TimeDiff(TimeStamp a, TimeStamp b) {
 
 	return timeDiff;
 }
+
+inline TimeStamp TimeSince(TimeStamp stamp) {
+		TimeStamp nowTimeStamp = InitializeTimeStamp();
+		return TimeDiff(nowTimeStamp, stamp);
+}
+
 
 inline TimeStamp PrintTimeSince(TimeStamp stamp) {
 	TimeStamp diff = TimeSince(stamp);
@@ -90,3 +96,20 @@ inline void MatchFrametime(TimeStamp frameTime, TimeStamp lastStamp) {
 	TimeStamp timeToWait = TimeDiff(frameTime, elapsed);
 	SleepTime(timeToWait);
 }
+
+DoubleTimeStamp InitializeDoubleTimeStamp() {
+	DoubleTimeStamp ret = {
+		.then = InitializeTimeStamp(),
+		.now = {}
+	};
+	return ret;
+}
+
+void UpdateDoubleTimeStamp(DoubleTimeStamp* ptr) {
+	assert(ptr);
+
+	ptr->then = ptr->now;
+	ptr->now = InitializeTimeStamp();
+}
+
+

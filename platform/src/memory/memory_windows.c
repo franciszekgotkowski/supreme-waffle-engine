@@ -2,9 +2,8 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include <engine/platform/memory_allocations.h>
-#include <engine/typedefs.h>
-#include <stddef.h>
+#include <export/platform/memory_allocations.h>
+#include <common/typedefs.h>
 #include <assert.h>
 
 // inline void* mem_alloc(u64 size) {

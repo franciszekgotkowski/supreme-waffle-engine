@@ -1,59 +1,69 @@
-#include <stdio.h>
-#include <engine/platform/measure_time.h>
-#include <engine/typedefs.h>
+#include <assert.h>
+#include <common/typedefs.h>
+#include <stdbool.h>
+#include <export/platform/measure_time.h>
 
 #include <windows.h>
 
 typedef struct {
     LARGE_INTEGER frequency;
-    LARGE_INTEGER then;
-    LARGE_INTEGER now;
-    f64 diff; // is filled when time_elapsed is run so that wait_for_frame does not have to calculate diff again
-} win_stamp;
-_Static_assert(sizeof(win_stamp)==sizeof(timestamp), "lin_stamp has different size from timestamp");
+    LARGE_INTEGER performanceCounts;
+} WinStamp;
 
-inline timestamp make_stamp() {
-    /*
-    timestamp:
-    [8byte] - frequency
-    [8byte] - then
-    [8byte] - now
-    [8byte] - diff
-    */
+_Static_assert(sizeof(WinStamp)==sizeof(TimeStamp), "lin_stamp has different size from timestamp");
 
-    win_stamp stamp = {0};
-    QueryPerformanceFrequency(&(stamp.frequency));
-    QueryPerformanceCounter(&(stamp.now));
-    timestamp t;
-    memcpy(&t, &stamp, sizeof(stamp));
-    return t;
+bool latencyMinimized = false;
+inline static void MinimizeLatency() {
+    if (!latencyMinimized) {
+        timeBeginPeriod(1);
+        latencyMinimized = true;
+    }
 }
 
-// returns time difference in miliseconds
-inline static f64 time_diff(LARGE_INTEGER then, LARGE_INTEGER now, LARGE_INTEGER freq) {
-    return (1000.0*(f64)(now.QuadPart - then.QuadPart))/(f64)freq.QuadPart;
+TimeStamp InitializeTimeStamp() {
+
+    MinimizeLatency();
+
+    LARGE_INTEGER freq, ticks;
+
+    bool ok = QueryPerformanceCounter( (LARGE_INTEGER*)&ticks );
+    assert( ok );
+    ok = QueryPerformanceFrequency( (LARGE_INTEGER*)&freq );
+    assert( ok );
+
+    TimeStamp ret = {
+        .sec = ticks.QuadPart / freq.QuadPart,
+        .nsec = ((ticks.QuadPart % freq.QuadPart) * 1000000000LL) / freq.QuadPart
+    };
+
+    return ret;
 }
 
-inline f64 elapsed_time(timestamp *ptr) {
-    win_stamp* stamp = (win_stamp*)ptr;
+void SleepTime(TimeStamp amount) {
+    MinimizeLatency();
 
-    stamp->then = stamp->now;
-    QueryPerformanceCounter(&(stamp->now));
-    stamp->diff = time_diff(stamp->then, stamp->now, stamp->frequency);
-    return stamp->diff;
-}
+    TimeStamp errorMargin = {
+        .sec = 0,
+        .nsec = 2000000
+    };
 
-inline f64 read_elapsed_time(timestamp* ptr) {
-    win_stamp* stamp = (win_stamp*)ptr;
-    return stamp->diff;
-}
 
-inline void wait_for_frame() {
-    win_stamp* stamp = (win_stamp*)&(((WindowData*)getRegion(WINDOW_DATA))->fpsMaintainingTimestamp);
-    i32 fps = ((WindowData*)getRegion(WINDOW_DATA))->fps;
+    TimeStamp functionStartStamp = InitializeTimeStamp();
+    TimeStamp final = (TimeStamp)AddTimestamps(amount, functionStartStamp);
 
-    f64 timePerFrame = 1000.0/fps;
-    f64 timeToWait = timePerFrame - stamp->diff;
-    if (timeToWait < 0) { timeToWait = 0; }
-    Sleep((u64)timeToWait);
+    TimeStamp newTime = amount;
+
+    if (SmallerTimeStamp(amount, errorMargin) == 1) {
+        newTime.nsec -= errorMargin.nsec;
+        assert(newTime.nsec + newTime.sec * 1000000000 < UINT32_MAX);
+        DWORD msToSleep = newTime.nsec + newTime.sec * 1000000000;
+        Sleep(msToSleep);
+    }
+
+    while (true) {
+        TimeStamp now = InitializeTimeStamp();
+        if (SmallerTimeStamp(final, now) == -1) {
+            break;
+        }
+    }
 }

@@ -3,9 +3,9 @@
 #include <windows.h>
 #include <stdbool.h>
 
-#include <engine/platform/file_io.h>
-#include <engine/platform/memory_allocations.h>
-#include <engine/range.h>
+#include <export/platform/file_io.h>
+#include <export/platform/memory_allocations.h>
+#include <common/range.h>
 
 // Reads file string, and copies its insides but removes \r\n from file and leaves just \n
 // Returns FileData with data under .ptr pointer

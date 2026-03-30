@@ -187,8 +187,8 @@ void GameLoop() {
 	printf("TOTAL_SIZE_FOR_TEXT_RENDERING = %lluMb %lluKb %llub\n", (llu)TOTAL_SIZE_FOR_TEXT_RENDERING/MB, (llu)((TOTAL_SIZE_FOR_TEXT_RENDERING%MB)/KB), (llu)(TOTAL_SIZE_FOR_TEXT_RENDERING%KB));
 
 	WindowData* windowData = getRegion(WINDOW_DATA);
-	windowData->frametimeEveningTimeStamp = InitializeTimeStamp();
 	TimeStamp startDrawingStamp = InitializeTimeStamp();
+	windowData->frametimeEveningTimeStamp = startDrawingStamp;
 	while (!((WindowData *) getRegion(WINDOW_DATA))->windowShouldClose) {
 		clearScreen();
 

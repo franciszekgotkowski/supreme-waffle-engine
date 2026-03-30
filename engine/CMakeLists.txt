@@ -9,7 +9,6 @@ set(ENGINE_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/area.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/memory_region_capacities.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/handle_input.c
-		${CMAKE_CURRENT_SOURCE_DIR}/src/measure_time.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/text_rendering.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/window.c
 )
