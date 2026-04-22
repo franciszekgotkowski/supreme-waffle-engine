@@ -30,10 +30,10 @@ typedef struct {
 	void* ptr;
 } GameObject;
 
-#define MAXIMUM_AMOUNT_OF_ASSETS_IN_SCENE 100
+#define MAXIMUM_AMOUNT_OF_ASSETS_IN_SCENE 1000
 #define MAXIMUM_AMOUNT_OF_GAME_OBJECTS_IN_SCENE 1000
 typedef struct {
-	u64 capacity;
+	u64 maximumCapacity;
 	void* data; // pointer to where data storage starts (should be address after address of this struct)
 	void* stackTop;
 	u64 amountOfAssets;

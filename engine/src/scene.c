@@ -19,7 +19,7 @@ Error InitializeScene(
 	assert(sizeof(SceneData) <= size);
 
 	*sceneData = (SceneData){
-		.capacity = size - sizeof(SceneData),
+		.maximumCapacity = size - sizeof(SceneData),
 		.data = (void*)(sceneData + 1),
 		.stackTop = (void*)(sceneData + 1),
 		.amountOfAssets = 0,
@@ -80,7 +80,7 @@ AssetID RegisterNewAsset(
 		return 0;
 	}
 
-	if (sceneData->stackTop > sceneData->data + sceneData->capacity) {
+	if (sceneData->stackTop > sceneData->data + sceneData->maximumCapacity) {
 		*err = OUT_OF_MEMORY;
 		return 0;
 	}
@@ -110,7 +110,7 @@ GameObjectID RegisterNewGameObject(
 		return 0;
 	}
 
-	if (sceneData->stackTop > sceneData->data + sceneData->capacity) {
+	if (sceneData->stackTop > sceneData->data + sceneData->maximumCapacity) {
 		*err = OUT_OF_MEMORY;
 		return 0;
 	}

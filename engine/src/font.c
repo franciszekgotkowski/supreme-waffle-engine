@@ -555,7 +555,11 @@ Error InitializeCharacterDataOnAddress(Font* font, void* dest, FileData file)
 // The same as InitializeCharacterDataOntoFont but will destination is top of the address just on top  of font
 Error InitializeCharacterDataOntoFont(Font* font, FileData file)
 {
-    return InitializeCharacterDataOnAddress(font, ((void*)font) + sizeof(Font), file);
+    return InitializeCharacterDataOnAddress(
+    	font,
+     	((void*)font) + sizeof(Font),
+      	file
+    );
 }
 
 v2 GetTextureCoordinateBottomLeft(

@@ -35,16 +35,17 @@ void GameLoop() {
 	// readEntireTextFile("../../assets/fonts/bdf/t0-16.bdf", &file);
 
 	SceneData* sceneData = (SceneData*)getRegion(LOADING_SCREEN_SCENE);
+	Font font = InitializeFont(file);
+	// registering font and loading it into memory
 	AssetID CherryFontID = RegisterNewAsset(
 		sceneData,
-		SIZEOF_MEMORY_FOR_FONTS,
+		GetSizeForEntireFont(&font),
 		&err
 	);
 	assert(err == OK);
-
-	Font *font = sceneData->asset[CherryFontID].ptr;
-	*font =  InitializeFont(file);
-	InitializeCharacterDataOntoFont(font, file);
+	Font* FontLocation = sceneData->asset[CherryFontID].ptr;
+	*FontLocation = font;
+	InitializeCharacterDataOntoFont(FontLocation, file);
 	freeEntireTextFile(file);
 	// printf("Font size in bytes: %llu\n", (llu)GetSizeForEntireFont(font));
 
@@ -140,8 +141,8 @@ void GameLoop() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (i32) bitmapW(font), (i32) bitmapH(font), 0, GL_RED, GL_UNSIGNED_BYTE,
-		font->characterBitmap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (i32) bitmapW(FontLocation), (i32) bitmapH(FontLocation), 0, GL_RED, GL_UNSIGNED_BYTE,
+		FontLocation->characterBitmap);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glActiveTexture(GL_TEXTURE0);

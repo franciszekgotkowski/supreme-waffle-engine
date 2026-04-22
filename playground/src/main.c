@@ -27,7 +27,7 @@ int main() {
     InitializeEngineWindow(
      	800,
       	800,
-       	100,
+       	60,
         false,
         false,
         (v4){
