@@ -14,6 +14,7 @@ typedef enum {
     INVALID_INPUT,
     OUT_OF_INDEXES,
     DOES_NOT_EXIST,
+    ALREADY_EXISTS,
 
     AMOUNT_OF_ERRORS
 } Error ;

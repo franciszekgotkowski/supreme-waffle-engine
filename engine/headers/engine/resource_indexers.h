@@ -8,6 +8,7 @@
 // indexes is pointer to place after corresponding ResourceIndexer object - it is basically pointer to make size of array not hard coded
 typedef struct {
 	u32 maxAmountOfResources;
+	u32 currentAmountOfResources;
 	void** indexes;
 } ResourceIndexer;
 

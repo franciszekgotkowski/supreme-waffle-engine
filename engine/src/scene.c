@@ -9,7 +9,7 @@
 
 extern PointerTable* GameMemory;
 
-extern const u32 SizesForEachIndexer[AMOUNT_OF_STATIC_SCENE_RESOURCES];
+extern const u32 SizesForEachStaticResource[AMOUNT_OF_STATIC_SCENE_RESOURCES];
 
 static void InitializeStaticResourceIndexer(
 	SceneData* sceneData,
@@ -27,15 +27,16 @@ static void InitializeStaticResourceIndexer(
 	Error err;
 	for range(i, AMOUNT_OF_STATIC_SCENE_RESOURCES) {
 		if (sceneData->staticResourcesIndexer.exist[i]) {
-			assert(SizesForEachIndexer[i] != 0);
+			assert(SizesForEachStaticResource[i] != 0);
 			void* t = PushNewResource(
 				sceneData,
-				SizesForEachIndexer[i],
+				SizesForEachStaticResource[i],
 				&err
 			);
 			assert(err == OK);
 			assert(t);
 			sceneData->staticResourcesIndexer.ptr[i] = t;
+			sceneData->staticResourcesIndexer.exist[i] = true;
 		}
 	}
 }

@@ -19,13 +19,12 @@ typedef struct {
 	void* ptr[AMOUNT_OF_STATIC_SCENE_RESOURCES];
 } StaticResourcesIndexer;
 
-// Initializes the static resource onto
-Error InitializeStaticResource(
-	StaticResourcesIndexer* staticSceneResources,
-	StaticResources resource
-);
-
+// Returns pointer to requested StaticResource.
+// Errors it can return:
+// 	- OK
+// 	- DOES_NOT_EXIST		in this case funcion will also return NULL
 void* GetStaticResource(
 	StaticResourcesIndexer* staticSceneResources,
-	StaticResources resource
+	StaticResources resource,
+	Error* err
 );
