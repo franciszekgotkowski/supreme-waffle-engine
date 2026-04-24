@@ -11,7 +11,7 @@ Error InitializeMemoryArena(
 ){
 	assert(base);
 
-	assert(!(cap < sizeof(MemoryArena)));
+	// assert(!(cap < sizeof(MemoryArena)));
 	if (cap < sizeof(MemoryArena)) {
 		return OUT_OF_MEMORY;
 	}
@@ -20,16 +20,41 @@ Error InitializeMemoryArena(
 
 	*arena = (MemoryArena) {
 		.amountOfCheckpoints = 0,
-		.base = base,
+		.base = base + sizeof(MemoryArena),
 		.top = base + sizeof(MemoryArena),
-		.capacity = cap,
+		.capacity = cap - sizeof(MemoryArena),
 		.locked = false
 	};
 
 	return OK;
 }
 
-void* push_MemoryArena(
+void* registerMemory_MemoryArena(
+	MemoryArena* arena,
+	u64 size,
+	Error* err
+){
+	assert(arena);
+		assert(err);
+
+		if (arena->locked) {
+			*err = LOCKED;
+			return nullptr;
+		}
+
+		if (size + arena->top > arena->base) {
+			*err = OUT_OF_MEMORY;
+			return nullptr;
+		}
+
+		void* ptr = arena->top;
+		arena->top += size;
+
+		*err = OK;
+		return ptr;
+}
+
+void* registerAndInitializeMemory_MemoryArena(
 	MemoryArena* arena,
 	u64 size,
 	void* input,
@@ -38,25 +63,23 @@ void* push_MemoryArena(
 	assert(arena);
 	assert(err);
 
-	assert(!arena->locked);
-	if (arena->locked) {
-		*err = LOCKED;
-		return nullptr;
+	void* t = registerMemory_MemoryArena(
+		arena,
+		size,
+		err
+	);
+
+	if ( *err != OK ) {
+		return NULL;
 	}
 
-	assert(size + arena->top <= arena->base);
-	if (size + arena->top > arena->base) {
-		*err = OUT_OF_MEMORY;
-		return nullptr;
-	}
+	memcpy(
+		t,
+		input,
+		size
+	);
+	return t;
 
-	void* variableLocation = arena->top;
-	if (input != nullptr) {
-		memcpy(arena->top, input, size);
-	}
-	arena->top += size;
-	*err = OK;
-	return variableLocation;
 }
 
 Error reset_MemoryArena(
@@ -64,61 +87,68 @@ Error reset_MemoryArena(
 ) {
 	assert(arena);
 
-	assert(!arena->locked);
 	if (arena->locked) {
 		return LOCKED;
 	}
 
 	arena->top = arena->base;
+	arena->amountOfCheckpoints = 0;
 
 	return OK;
 }
 
-Error addCheckpoint_MemoryArena(
+CheckpointID addCheckpoint_MemoryArena(
 	MemoryArena* arena,
-	void* ptr
+	void* ptr,
+	Error* err
 ) {
 	assert(arena);
 	assert(ptr);
 
-	assert(!arena->locked);
 	if (arena->locked) {
-		return LOCKED;
+		*err =  LOCKED;
+		return 0;
 	}
 
-	assert(!(arena->amountOfCheckpoints >= MAX_AMOUNT_OF_ARENA_CHECKPOINTS));
 	if (arena->amountOfCheckpoints >= MAX_AMOUNT_OF_ARENA_CHECKPOINTS) {
-		return OUT_OF_MEMORY;
+		*err =  OUT_OF_INDEXES;
+		return 0;
 	}
 
-	assert(!(ptr > arena->base || ptr <= arena->base+arena->capacity));
-	if (ptr > arena->base || ptr <= arena->base+arena->capacity) {
-		return OUT_OF_RANGE;
+	if (ptr < arena->base || ptr > arena->base+arena->capacity) {
+		*err =  OUT_OF_RANGE;
+		return 0;
+	}
+
+	if (arena->amountOfCheckpoints > 0) {
+		if (ptr < arena->checkpoint[arena->amountOfCheckpoints-1]) {
+			*err = INVALID_INPUT;
+			return 0;
+		}
 	}
 
 	arena->checkpoint[arena->amountOfCheckpoints] = ptr;
 	arena->amountOfCheckpoints += 1;
-	return OK;
+	*err =  OK;
+	return arena->amountOfCheckpoints - 1;
 }
 
-Error returnToCheckpoint_MemoryArena(
+Error resetToCheckpoint_MemoryArena(
 	MemoryArena* arena,
-	u64 idx
+	CheckpointID id
 ) {
 	assert(arena);
 
-	assert(!arena->locked);
 	if (arena->locked) {
 		return LOCKED;
 	}
 
-	assert(!(idx > arena->amountOfCheckpoints));
-	if (idx > arena->amountOfCheckpoints) {
+	if (id > arena->amountOfCheckpoints) {
 		return OUT_OF_RANGE;
 	}
 
-	arena->amountOfCheckpoints = idx+1;
-	arena->top = arena->checkpoint[idx];
+	arena->amountOfCheckpoints = id+1;
+	arena->top = arena->checkpoint[id];
 
 	return OK;
 }
