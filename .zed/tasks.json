@@ -13,5 +13,10 @@
 		"label": "run",
 		"cwd": "$ZED_WORKTREE_ROOT/build",
 		"command": "cmake -S ../ && time make -j 12 && cd ./playground && ./playground"
+	},
+	{
+		"label": "loc",
+		"cwd": "$ZED_WORKTREE_ROOT",
+		"command": "./loc.sh"
 	}
 ]

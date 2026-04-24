@@ -98,7 +98,7 @@ typedef struct {
 } TextData;
 
 // Initializes memory regions (asset and gameObject) for text rendering
-Error InitializeTextRenderingObject(
+void InitializeTextRenderingObject(
 	void* ptr
 );
 

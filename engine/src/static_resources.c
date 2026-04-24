@@ -1,9 +1,13 @@
+#include <engine/text_rendering.h>
 #include <common/errors.h>
 #include <assert.h>
 #include <engine/static_resources.h>
+#include <engine/resource_indexers.h>
 #include <common/typedefs.h>
 #include <string.h>
 #include <stddef.h>
+
+extern const u32 DefaultAmountsOfIndexes[AMOUNT_OF_STATIC_RESOURCES];
 
 void* GetStaticResource(
 	StaticResourcesIndexer* staticSceneResources,
@@ -11,7 +15,7 @@ void* GetStaticResource(
 	Error* err
 ) {
 	assert(staticSceneResources);
-	assert(resource < AMOUNT_OF_STATIC_SCENE_RESOURCES);
+	assert(resource < AMOUNT_OF_STATIC_RESOURCES);
 	assert(err);
 
 	if (!staticSceneResources->exist[resource]) {
@@ -20,4 +24,36 @@ void* GetStaticResource(
 	}
 
 	return staticSceneResources->ptr[resource];
+}
+
+// This is function that will select correct initalizer based on enum of static resource
+void InitializeStaticResource(
+	void* ptr, //where to initialize
+	StaticResources staticResources
+) {
+	assert(ptr);
+	assert(staticResources < AMOUNT_OF_STATIC_RESOURCES);
+
+	switch (staticResources) {
+		case TEXT_RENDERING_OBJECT:
+			InitializeTextRenderingObject(
+				ptr
+			);
+			break;
+		case FONT_INDEXER:
+			InitializeResourceIndexer(
+				ptr,
+				DefaultAmountsOfIndexes[FONT_INDEXER]
+			);
+			break;
+		case OBJECT_3D_INDEXER:
+			InitializeResourceIndexer(
+				ptr,
+				DefaultAmountsOfIndexes[OBJECT_3D_INDEXER]
+			);
+			break;
+		default:
+			assert(false);
+			break;
+	}
 }

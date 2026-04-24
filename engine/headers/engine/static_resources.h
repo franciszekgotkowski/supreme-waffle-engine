@@ -10,13 +10,13 @@ typedef enum {
 	FONT_INDEXER,
 	OBJECT_3D_INDEXER,
 
-	AMOUNT_OF_STATIC_SCENE_RESOURCES
+	AMOUNT_OF_STATIC_RESOURCES
 } StaticResources;
 
 // Indexer made specifically to contain Indexers that will be dynamically allocated on the scene stack if needed. It lives in SceneData struct
 typedef struct {
-	bool exist[AMOUNT_OF_STATIC_SCENE_RESOURCES];
-	void* ptr[AMOUNT_OF_STATIC_SCENE_RESOURCES];
+	bool exist[AMOUNT_OF_STATIC_RESOURCES];
+	void* ptr[AMOUNT_OF_STATIC_RESOURCES];
 } StaticResourcesIndexer;
 
 // Returns pointer to requested StaticResource.

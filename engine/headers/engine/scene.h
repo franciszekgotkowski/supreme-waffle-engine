@@ -39,7 +39,7 @@ Error InitializeScene(
 	u64 size,
 	str uiPath,
 	str areaPath,
-	bool exist[AMOUNT_OF_STATIC_SCENE_RESOURCES]
+	bool exist[AMOUNT_OF_STATIC_RESOURCES]
 );
 
 Error LoadGameScene(

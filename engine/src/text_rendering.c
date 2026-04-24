@@ -5,7 +5,7 @@
 #include <common/errors.h>
 #include <string.h>
 
-Error InitializeTextRenderingObject(
+void InitializeTextRenderingObject(
 	void* ptr
 ) {
 
@@ -30,8 +30,6 @@ Error InitializeTextRenderingObject(
 		.indiciesStart = ptr + sizeof(TextData) + MAX_SIZE_FOR_TEXT + MAX_AMOUNT_OF_CHARS_PER_SCENE * SIZEOF_ONE_LETTER_VERTICIES,
 		.indiciesTop = ptr + sizeof(TextData) + MAX_SIZE_FOR_TEXT + MAX_AMOUNT_OF_CHARS_PER_SCENE * SIZEOF_ONE_LETTER_VERTICIES,
 	};
-
-	return OK;
 }
 
 Error AppendNewLine(

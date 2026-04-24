@@ -6,14 +6,16 @@
 #include <string.h>
 #include <common/range.h>
 #include <engine/static_resources.h>
+#include <engine/resource_indexers.h>
 
 extern PointerTable* GameMemory;
 
-extern const u32 SizesForEachStaticResource[AMOUNT_OF_STATIC_SCENE_RESOURCES];
+extern const u32 SizesForEachStaticResource[AMOUNT_OF_STATIC_RESOURCES];
+extern const u32 DefaultAmountsOfIndexes[AMOUNT_OF_STATIC_RESOURCES];
 
 static void InitializeStaticResourceIndexer(
 	SceneData* sceneData,
-	bool exist[AMOUNT_OF_STATIC_SCENE_RESOURCES]
+	bool exist[AMOUNT_OF_STATIC_RESOURCES]
 ) {
 	assert(sceneData);
 	assert(exist);
@@ -21,11 +23,11 @@ static void InitializeStaticResourceIndexer(
 	memcpy(
 		&(sceneData->staticResourcesIndexer.exist),
 		&exist,
-		(AMOUNT_OF_STATIC_SCENE_RESOURCES * sizeof(bool))
+		(AMOUNT_OF_STATIC_RESOURCES * sizeof(bool))
 	);
 
 	Error err;
-	for range(i, AMOUNT_OF_STATIC_SCENE_RESOURCES) {
+	for range(i, AMOUNT_OF_STATIC_RESOURCES) {
 		if (sceneData->staticResourcesIndexer.exist[i]) {
 			assert(SizesForEachStaticResource[i] != 0);
 			void* t = PushNewResource(
@@ -35,6 +37,10 @@ static void InitializeStaticResourceIndexer(
 			);
 			assert(err == OK);
 			assert(t);
+			InitializeResourceIndexer(
+				t,
+				i
+			);
 			sceneData->staticResourcesIndexer.ptr[i] = t;
 			sceneData->staticResourcesIndexer.exist[i] = true;
 		}
@@ -46,7 +52,7 @@ Error InitializeScene(
 	u64 size,
 	str uiPath,
 	str areaPath,
-	bool StaticResourcesExist[AMOUNT_OF_STATIC_SCENE_RESOURCES]
+	bool StaticResourcesExist[AMOUNT_OF_STATIC_RESOURCES]
 ) {
 	assert(sceneData);
 	assert(uiPath);

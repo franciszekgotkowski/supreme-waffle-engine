@@ -60,7 +60,7 @@ void GameLoop() {
 	);
 	assert(err == OK);
 
-	err = InitializeTextRenderingObject(
+	InitializeTextRenderingObject(
 		textPtr
 	);
 	assert(err == OK);

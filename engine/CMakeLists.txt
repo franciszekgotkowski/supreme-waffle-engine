@@ -13,6 +13,7 @@ set(ENGINE_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/window.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/static_resources.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/static_resources_constants.c
+		${CMAKE_CURRENT_SOURCE_DIR}/src/resource_indexer.c
 )
 
 target_sources(engine PRIVATE ${ENGINE_SOURCES})
