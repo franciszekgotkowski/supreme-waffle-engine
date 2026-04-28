@@ -34,7 +34,6 @@ void* registerMemory_MemoryArena(
 	Error* err
 );
 
-// Will crash if there is to little space.
 // Push will increase head of arena.
 // Function returns pointer to where variable now resides
 // If input is nullptr no data will be copied!
@@ -80,4 +79,12 @@ CheckpointID addCheckpoint_MemoryArena(
 Error resetToCheckpoint_MemoryArena(
 	MemoryArena* arena,
 	CheckpointID id
+);
+
+void lock_MemoryArena(
+	MemoryArena* arena
+);
+
+void unlock_MemoryArena(
+	MemoryArena* arena
 );

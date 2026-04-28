@@ -18,5 +18,10 @@
 		"label": "loc",
 		"cwd": "$ZED_WORKTREE_ROOT",
 		"command": "./loc.sh"
+	},
+	{
+		"label": "test",
+		"cwd": "$ZED_WORKTREE_ROOT/build",
+		"command": "cmake -S ../ && time make -j 12 && cd ./tests && ./tests"
 	}
 ]

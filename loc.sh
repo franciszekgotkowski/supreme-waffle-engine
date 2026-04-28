@@ -12,6 +12,8 @@ TARGET_DIRS=(
   "platform/shaders"
   "platform/headers/export"
   "platform/headers/internal"
+  "tests/src"
+  "tests/headers/tests"
 )
 
 # Use find to locate .c and .h files and pass them to wc -l

@@ -145,3 +145,19 @@ Error resetToCheckpoint_MemoryArena(
 
 	return OK;
 }
+
+void lock_MemoryArena(
+	MemoryArena* arena
+) {
+	assert(arena);
+
+	arena->locked = true;
+}
+
+void unlock_MemoryArena(
+	MemoryArena* arena
+) {
+	assert(arena);
+
+	arena->locked = false;
+}

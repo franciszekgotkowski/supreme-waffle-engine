@@ -1,5 +1,11 @@
 add_library(platform STATIC)
 
+target_compile_options(platform PRIVATE
+	${COMMON_FLAGS}
+	$<$<CONFIG:Debug>:${DEBUG_FLAGS}>
+	$<$<CONFIG:Release>:${RELEASE_FLAGS}>
+)
+
 set(PLATFORM_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/window/window_glfw.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/collect_input/collect_input_glfw.c

@@ -1,5 +1,11 @@
 add_library(engine STATIC)
 
+target_compile_options(engine PRIVATE
+	${COMMON_FLAGS}
+	$<$<CONFIG:Debug>:${DEBUG_FLAGS}>
+	$<$<CONFIG:Release>:${RELEASE_FLAGS}>
+)
+
 set(ENGINE_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/memory_pool.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/memory_arena.c

@@ -11,5 +11,13 @@
 		"adapter": "GDB",
 		// "adapter": "CodeLLDB",
 		"cwd": "$ZED_WORKTREE_ROOT/build/playground"
+	},
+	{
+		"label": "Debug tests",
+		"program": "$ZED_WORKTREE_ROOT/build/tests/tests",
+		"build": "make",
+		"request": "launch",
+		"adapter": "GDB",
+		"cwd": "$ZED_WORKTREE_ROOT/build/tests"
 	}
 ]

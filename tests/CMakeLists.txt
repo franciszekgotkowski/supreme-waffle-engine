@@ -2,6 +2,7 @@ add_executable(tests)
 
 target_sources(tests PRIVATE
 		src/main.c
+		src/memory_arena_tests.c
 )
 
 target_include_directories(tests PRIVATE

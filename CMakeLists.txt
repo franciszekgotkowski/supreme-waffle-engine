@@ -11,9 +11,13 @@ set(CMAKE_CONFIGURATION_TYPES
 				# DebugBenchmark
 )
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
-set(CMAKE_C_FLAGS_DEBUG "-g -O0 -pg")
-set(CMAKE_C_FLAGS_RELEASE "-O3 -Wno-unused-but-set-variable -Wno-unused-variable")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
+# set(CMAKE_C_FLAGS_DEBUG "-g -O0 -pg")
+# set(CMAKE_C_FLAGS_RELEASE "-O3 -Wno-unused-but-set-variable -Wno-unused-variable")
+
+set(COMMON_FLAGS -Wall -Werror)
+set(DEBUG_FLAGS -g -O0 -pg)
+set(RELEASE_FLAGS -O3 -Wno-unused-but-set-variable -Wno-unused-variable)
 
 set(CMAKE_BUILD_TYPE Debug)
 # set(CMAKE_BUILD_TYPE Release)

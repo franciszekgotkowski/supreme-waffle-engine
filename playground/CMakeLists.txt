@@ -1,5 +1,11 @@
 add_executable(playground)
 
+target_compile_options(playground PRIVATE
+	${COMMON_FLAGS}
+	$<$<CONFIG:Debug>:${DEBUG_FLAGS}>
+	$<$<CONFIG:Release>:${RELEASE_FLAGS}>
+)
+
 target_sources(playground PRIVATE
 		src/main.c
 		src/game_loop.c
