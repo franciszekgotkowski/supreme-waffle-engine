@@ -565,7 +565,6 @@ static void reseting_to_checkpoint_checkpoint_does_not_exist(void **state) {
 	);
 	assert_true(arena.amountOfCheckpoints == 3);
 	assert_true(err == OUT_OF_RANGE);
-	assert_true(0);
 }
 
 i32 run_memory_arena_test() {
