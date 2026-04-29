@@ -5,11 +5,7 @@
 #include <engine/memory_arena.h>
 #include <platform/memory_allocations.h>
 #include <common/range.h>
-
-typedef struct {
-	u64 size;
-	void* ptr;
-} TestMemory ;
+#include <tests/test_memory_struct.h>
 
 static i32 allocate_1MB_of_memory_for_arena_setup(void **state) {
 	u64 memoryAmount = MB;
@@ -569,6 +565,7 @@ static void reseting_to_checkpoint_checkpoint_does_not_exist(void **state) {
 	);
 	assert_true(arena.amountOfCheckpoints == 3);
 	assert_true(err == OUT_OF_RANGE);
+	assert_true(0);
 }
 
 i32 run_memory_arena_test() {

@@ -8,13 +8,15 @@ int main(void) {
 
     success += run_memory_arena_test();
 
-  		printf("\n0================================0\n");
     if (success == 0) {
+    	printf("\033[32m\n0================================0\n");
     	printf("All tests passed!");
+    	printf("\n0================================0\n\033[0m");
     } else {
-   		printf("%d test groups did not pass!");
+    	printf("\033[31m\n0================================0\n");
+   		printf("%d test groups did not pass!", success);
+    	printf("\n0================================0\n\033[0m");
     }
-   	printf("\n0================================0\n");
 
     return success;
 }
