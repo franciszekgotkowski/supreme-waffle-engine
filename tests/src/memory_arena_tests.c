@@ -33,12 +33,12 @@ static i32 deallocate_allocated_memory_teardown(void **state) {
 }
 
 static void create_empty_memory_arena(void **state) {
-	const void*  startingAddress = NULL + 1;
+	TestMemory* memory = *state;
 	const u64 capacity = 100;
 
-	MemoryArena arena = InitializeMemoryArena(startingAddress, capacity);
+	MemoryArena arena = InitializeMemoryArena(memory->ptr, capacity);
 	assert_true(arena.amountOfCheckpoints == 0);
-	assert_true(arena.base == startingAddress);
+	assert_true(arena.base == memory->ptr);
 	assert_true(arena.base == arena.top);
 	assert_true(!arena.locked);
 	assert_true(arena.capacity == capacity);
@@ -211,7 +211,11 @@ i32 run_memory_arena_test() {
 	i32 success = 0;
 
 	const struct CMUnitTest tests[]= {
-		cmocka_unit_test(create_empty_memory_arena),
+		cmocka_unit_test_setup_teardown(
+			create_empty_memory_arena,
+			allocate_1MB_of_memory_for_arena_setup,
+			deallocate_allocated_memory_teardown
+		),
 		cmocka_unit_test_setup_teardown(
 			register_memory_without_errors,
 			allocate_1MB_of_memory_for_arena_setup,

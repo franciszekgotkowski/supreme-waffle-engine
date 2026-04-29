@@ -16,7 +16,8 @@ set(CMAKE_CONFIGURATION_TYPES
 # set(CMAKE_C_FLAGS_RELEASE "-O3 -Wno-unused-but-set-variable -Wno-unused-variable")
 
 set(COMMON_FLAGS -Wall -Werror)
-set(DEBUG_FLAGS -g -O0 -pg)
+set(DEBUG_FLAGS -g -O0)
+#set(DEBUG_FLAGS -g -O0 -pg)
 set(RELEASE_FLAGS -O3 -Wno-unused-but-set-variable -Wno-unused-variable)
 
 set(CMAKE_BUILD_TYPE Debug)

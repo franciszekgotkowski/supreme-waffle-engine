@@ -5,6 +5,12 @@ target_sources(tests PRIVATE
 		src/memory_arena_tests.c
 )
 
+target_compile_options(playground PRIVATE
+		$<$<CONFIG:Debug>:${DEBUG_FLAGS}>
+		$<$<CONFIG:Release>:${RELEASE_FLAGS}>
+)
+
+
 target_include_directories(tests PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/headers
 
