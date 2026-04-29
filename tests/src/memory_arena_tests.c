@@ -196,15 +196,134 @@ static void reset_memory_arena(void **state) {
 
 }
 
+static void adding_good_checkpoints(void **state) {
+	TestMemory* memory = *state;
 
-static void adding_checkpoint(void **state) {
+	MemoryArena arena = InitializeMemoryArena(memory->ptr, memory->size);
+	Error err;
+	void* m;
+
+	CheckpointID id;
+
+	assert_true(arena.amountOfCheckpoints == 0);
+	m = registerMemory_MemoryArena(
+		&arena,
+		KB,
+		&err
+	);
+	id = addCheckpoint_MemoryArena(
+		&arena,
+		arena.base,
+		&err
+	);
+	assert_true(err == OK);
+	assert_true(id == 0);
+	assert_ptr_not_equal(m, NULL);
+
+	for range(i, 10) {
+		m = registerMemory_MemoryArena(
+			&arena,
+			KB,
+			&err
+		);
+		id = addCheckpoint_MemoryArena(
+			&arena,
+			arena.top-1,
+			&err
+		);
+		assert_ptr_not_equal(m, NULL);
+		assert_true(err == OK);
+		assert_true(id == i+1);
+	}
+}
+
+static void adding_checkpoints_when_arean_is_locked(void **state) {
 	TestMemory* memory = *state;
 
 	MemoryArena arena = InitializeMemoryArena(memory->ptr, memory->size);
 	Error err;
 
+	CheckpointID id;
+
+	void* m = registerMemory_MemoryArena(
+		&arena,
+		KB,
+		&err
+	);
+
+	lock_MemoryArena(&arena);
+	assert_true(arena.amountOfCheckpoints == 0);
+	id = addCheckpoint_MemoryArena(
+		&arena,
+		arena.base,
+		&err
+	);
+	assert_true(err == LOCKED);
+
+	unlock_MemoryArena(&arena);
+	assert_true(arena.amountOfCheckpoints == 0);
+	id = addCheckpoint_MemoryArena(
+		&arena,
+		arena.base,
+		&err
+	);
+	assert_true(err == OK);
+	assert_true(id == 0);
+}
+
+static void adding_checkpoint_with_pointer_outside_allocated_memory(void **state) {
+	TestMemory* memory = *state;
+
+	MemoryArena arena = InitializeMemoryArena(memory->ptr, memory->size);
+	Error err;
 	void* m;
-	assert_true(0);
+
+	CheckpointID id;
+
+	assert_true(arena.amountOfCheckpoints == 0);
+	m = registerMemory_MemoryArena(
+		&arena,
+		KB,
+		&err
+	);
+	assert_ptr_not_equal(m, NULL);
+
+	id = addCheckpoint_MemoryArena(
+		&arena,
+		arena.base,
+		&err
+	);
+	assert_true(err == OK);
+	assert_true(id == 0);
+
+	id = addCheckpoint_MemoryArena(
+		&arena,
+		arena.top-1,
+		&err
+	);
+	assert_true(err == OK);
+	assert_true(id == 1);
+
+	addCheckpoint_MemoryArena(
+		&arena,
+		arena.top,
+		&err
+	);
+	assert_true(err == OUT_OF_RANGE);
+
+	addCheckpoint_MemoryArena(
+		&arena,
+		arena.top+1,
+		&err
+	);
+	assert_true(err == OUT_OF_RANGE);
+
+	addCheckpoint_MemoryArena(
+		&arena,
+		arena.base-1,
+		&err
+	);
+	assert_true(err == OUT_OF_RANGE);
 }
 
 i32 run_memory_arena_test() {
@@ -247,7 +366,17 @@ i32 run_memory_arena_test() {
 			deallocate_allocated_memory_teardown
 		),
 		cmocka_unit_test_setup_teardown(
-			adding_checkpoint,
+			adding_good_checkpoints,
+			allocate_1MB_of_memory_for_arena_setup,
+			deallocate_allocated_memory_teardown
+		),
+		cmocka_unit_test_setup_teardown(
+			adding_checkpoints_when_arean_is_locked,
+			allocate_1MB_of_memory_for_arena_setup,
+			deallocate_allocated_memory_teardown
+		),
+		cmocka_unit_test_setup_teardown(
+			adding_checkpoint_with_pointer_outside_allocated_memory,
 			allocate_1MB_of_memory_for_arena_setup,
 			deallocate_allocated_memory_teardown
 		),

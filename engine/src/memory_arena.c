@@ -108,7 +108,7 @@ CheckpointID addCheckpoint_MemoryArena(
 		return 0;
 	}
 
-	if (ptr < arena->base || ptr > arena->base+arena->capacity) {
+	if (ptr < arena->base || ptr >= arena->top) {
 		*err =  OUT_OF_RANGE;
 		return 0;
 	}
