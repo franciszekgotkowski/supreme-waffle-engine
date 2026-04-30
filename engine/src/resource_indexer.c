@@ -1,6 +1,7 @@
 #include <common/errors.h>
 #include <engine/memory_arena.h>
 #include <assert.h>
+#include <stddef.h>
 #include <common/typedefs.h>
 #include <engine/resource_indexers.h>
 #include <strings.h>
@@ -23,6 +24,37 @@ void InitializeResourceIndexer(
 	};
 }
 
+ResourceIndexer* InitializeResourceIntoArena(
+	MemoryArena* arena,
+	u32 maxAmountOfResources,
+	Error* err
+) {
+	assert(arena);
+	assert(maxAmountOfResources < MAX_AMOUNT_OF_RESOURCES_IN_INDEXER);
+
+	Error e;
+	void* memory = registerMemory_MemoryArena(
+		arena,
+		GetWholeIndexerSize(maxAmountOfResources),
+		&e
+	);
+
+	if (e != OK) {
+		*err = e;
+		return NULL;
+	} else {
+		*err = OK;
+	}
+
+	InitializeResourceIndexer(
+		memory,
+		maxAmountOfResources,
+		arena
+	);
+
+	return memory;
+}
+
 ResourceID RegisterNewResource_ResourceIndexer(
 	ResourceIndexer* indexer,
 	u64 size,
@@ -33,12 +65,12 @@ ResourceID RegisterNewResource_ResourceIndexer(
 
 	if (indexer->arena->locked) {
 		*err = LOCKED;
-		return 0;
+		return -1;
 	}
 
 	if (indexer->currentAmountOfResources >= indexer->maxAmountOfResources) {
 		*err = OUT_OF_INDEXES;
-		return 0;
+		return -1;
 	}
 
 	Error error;
@@ -50,22 +82,38 @@ ResourceID RegisterNewResource_ResourceIndexer(
 
 	if (error != OK) {
 		assert(error == OUT_OF_MEMORY || error == LOCKED);
-		*err = error;
-		return 0;
+		if (error == OUT_OF_MEMORY) {
+			*err = OUT_OF_MEMORY;
+		} else {
+			*err = LOCKED;
+		}
+		return -1;
 	}
 
 	indexer->indexes[indexer->currentAmountOfResources] = ptr;
 	indexer->currentAmountOfResources++;
 
-	return OK;
+	*err = OK;
+	return indexer->currentAmountOfResources-1;
 }
 
 void* GetResource_ResourceIndexer(
 	ResourceIndexer* indexer,
-	ResourceID id
+	ResourceID id,
+	Error* err
 ) {
 	assert(indexer);
-	assert(id < indexer->currentAmountOfResources);
+	assert(err);
+	// assert(id < indexer->currentAmountOfResources);
 
+	if (
+		id >= indexer->currentAmountOfResources ||
+		id < 0
+	) {
+		*err = OUT_OF_RANGE;
+		return NULL;
+	}
+
+	*err = OK;
 	return indexer->indexes[id];
 }

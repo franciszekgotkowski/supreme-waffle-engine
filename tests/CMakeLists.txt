@@ -3,6 +3,8 @@ add_executable(tests)
 target_sources(tests PRIVATE
 		src/main.c
 		src/memory_arena_tests.c
+		src/resource_indexer_tests.c
+		src/setup_and_teardown_functions.c
 )
 
 target_compile_options(playground PRIVATE

@@ -6,27 +6,7 @@
 #include <platform/memory_allocations.h>
 #include <common/range.h>
 #include <tests/test_memory_struct.h>
-
-static i32 allocate_1MB_of_memory_for_arena_setup(void **state) {
-	u64 memoryAmount = MB;
-	TestMemory* memory = malloc(sizeof(TestMemory));
-	*memory = (TestMemory){
-		.size = memoryAmount,
-		.ptr = malloc(memoryAmount)
-	};
-
-	*state = memory;
-
-	return 0;
-}
-
-static i32 deallocate_allocated_memory_teardown(void **state) {
-	TestMemory* memory = *state;
-	free(memory->ptr);
-	free(memory);
-
-	return 0;
-}
+#include <tests/setup_and_teardown_functions.h>
 
 static void create_empty_memory_arena(void **state) {
 	TestMemory* memory = *state;
@@ -567,7 +547,7 @@ static void reseting_to_checkpoint_checkpoint_does_not_exist(void **state) {
 	assert_true(err == OUT_OF_RANGE);
 }
 
-i32 run_memory_arena_test() {
+i32 run_memory_arena_tests() {
 	i32 success = 0;
 
 	const struct CMUnitTest tests[]= {
