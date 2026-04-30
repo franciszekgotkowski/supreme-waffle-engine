@@ -1,5 +1,6 @@
-#include <engine/memory_arena.h>
-#include <../headers/engine/handle_input.h>
+#include "glad/glad.h"
+#include <common/memory_arena.h>
+#include <engine/handle_input.h>
 #include <common/errors.h>
 #include <assert.h>
 #include <engine/memory_pool.h>
@@ -13,6 +14,7 @@ extern PointerTable* GameMemory;
 
 extern const u32 SizesForEachStaticResource[AMOUNT_OF_STATIC_RESOURCES];
 extern const u32 DefaultAmountsOfIndexes[AMOUNT_OF_STATIC_RESOURCES];
+extern const bool IsStaticResourceAnIndexer[AMOUNT_OF_STATIC_RESOURCES];
 
 static void InitializeStaticResourceIndexer(
 	SceneData* sceneData,
@@ -32,7 +34,6 @@ static void InitializeStaticResourceIndexer(
 
 	for range(i, AMOUNT_OF_STATIC_RESOURCES) {
 		if (sceneData->staticResourcesIndexer.exist[i]) {
-			assert(SizesForEachStaticResource[i] != 0);
 			void* t = registerMemory_MemoryArena(
 				arenaPtr,
 				SizesForEachStaticResource[i],
@@ -100,6 +101,7 @@ Error LoadGameScene(
 		(bool[]){
 			true,
 			true,
+			true,
 			true
 		}
 	);
@@ -124,6 +126,7 @@ Error LoadLoadingScreenScene(
 		(bool[]){
 			true,
 			true,
+			true,
 			true
 		}
 	);
@@ -142,4 +145,88 @@ void* GetStaticResource_SceneData(
 		return NULL;
 	}
 	return sceneData->staticResourcesIndexer.ptr[staticResource];
+}
+
+ID RegisterNewResource_SceneData(
+	SceneData* sceneData,
+	StaticResources type,
+	u32 size,
+	Error* err
+) {
+	assert(sceneData);
+	assert(err);
+	assert(type < MAX_AMOUNT_OF_RESOURCES_IN_INDEXER);
+	assert(IsStaticResourceAnIndexer[type]);
+
+	if (sceneData->arena.locked) {
+		*err = LOCKED;
+		return -1;
+	}
+
+	Error e;
+
+	ResourceIndexer* indexer = GetStaticResource_StaticResourceIndexer(
+		&sceneData->staticResourcesIndexer,
+		type,
+		&e
+	);
+	if (e != OK) {
+		assert(e == DOES_NOT_EXIST);
+		*err = DOES_NOT_EXIST;
+		return -1;
+	}
+
+	ID id = RegisterNewResource_ResourceIndexer(
+		indexer,
+		size,
+		&e
+	);
+	if (e != OK) {
+		assert(e == OUT_OF_INDEXES || e == OUT_OF_MEMORY);
+		*err = e;
+		return -1;
+	}
+
+	*err = OK;
+	return id;
+}
+
+void* GetResource_SceneData(
+	SceneData* sceneData,
+	StaticResources type,
+	ID id,
+	Error* err
+) {
+	assert(sceneData);
+	assert(err);
+	assert(type < MAX_AMOUNT_OF_RESOURCES_IN_INDEXER);
+	assert(IsStaticResourceAnIndexer[type]);
+	assert(id >= 0);
+
+	Error e;
+
+	ResourceIndexer* indexer = GetStaticResource_StaticResourceIndexer(
+		&sceneData->staticResourcesIndexer,
+		type,
+		&e
+	);
+	if (e != OK) {
+		assert(e == DOES_NOT_EXIST);
+		*err = DOES_NOT_EXIST;
+		return NULL;
+	}
+
+	void* ptr = GetResource_ResourceIndexer(
+		indexer,
+		id,
+		&e
+	);
+	if (e != OK) {
+		assert(e == OUT_OF_RANGE);
+		*err = OUT_OF_RANGE;
+		return NULL;
+	}
+
+	*err = OK;
+	return ptr;
 }

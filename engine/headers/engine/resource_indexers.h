@@ -1,11 +1,10 @@
 #pragma once
 
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <common/typedefs.h>
 #include <common/errors.h>
 #define MAX_AMOUNT_OF_RESOURCES_IN_INDEXER 100000
 
-typedef i32 ResourceID;
 
 // ResourceIndexer is meant to be used strictly in combination with memory arena allocator inside sceneData
 // maxAmountOfResources is amount of indexes that this indexer can manage. It has to be lower than MAX_AMOUNT_OF_RESOURCES_IN_INDEXER
@@ -47,7 +46,7 @@ ResourceIndexer* InitializeResourceIntoArena(
 //	- LOCKED				if memory arena is locked
 //	- OUT_OF_INDEXES		if there is no more indexes to fill in
 //	- OUT_OF_MEMORY			if there is no memory left in the arena
-ResourceID RegisterNewResource_ResourceIndexer(
+ID RegisterNewResource_ResourceIndexer(
 	ResourceIndexer* indexer,
 	u64 size,
 	Error* err
@@ -59,6 +58,6 @@ ResourceID RegisterNewResource_ResourceIndexer(
 // 	- OUT_OF_RANGE			if index is below 0 or if there is no resource under given ID
 void* GetResource_ResourceIndexer(
 	ResourceIndexer* indexer,
-	ResourceID id,
+	ID id,
 	Error* err
 );

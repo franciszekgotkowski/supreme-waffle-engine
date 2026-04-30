@@ -1,5 +1,6 @@
 #include <engine/static_resources.h>
 #include <common/typedefs.h>
+#include <stdbool.h>
 
 // Default amounts of elements each indexer can handle.
 // Unfortunately i can set values for all static resources.
@@ -9,10 +10,19 @@
 const u32 DefaultAmountsOfIndexes[AMOUNT_OF_STATIC_RESOURCES] = {
 	[FONT_INDEXER] = 100,
 	[OBJECT_3D_INDEXER] = 10000,
+	[SHADER_PROGRAM_INDEXER] = 1000,
+};
+
+const bool IsStaticResourceAnIndexer[AMOUNT_OF_STATIC_RESOURCES] = {
+	[TEXT_RENDERING_OBJECT] = false,
+	[FONT_INDEXER] = true,
+	[OBJECT_3D_INDEXER] = true,
+	[SHADER_PROGRAM_INDEXER] = true,
 };
 
 const u32 SizesForEachStaticResource[AMOUNT_OF_STATIC_RESOURCES] = {
 	[TEXT_RENDERING_OBJECT] = TOTAL_SIZE_FOR_TEXT_RENDERING,
 	[FONT_INDEXER] = GetWholeIndexerSize(DefaultAmountsOfIndexes[FONT_INDEXER]),
 	[OBJECT_3D_INDEXER] = GetWholeIndexerSize(DefaultAmountsOfIndexes[OBJECT_3D_INDEXER]),
+	[SHADER_PROGRAM_INDEXER] = GetWholeIndexerSize(DefaultAmountsOfIndexes[SHADER_PROGRAM_INDEXER]),
 };

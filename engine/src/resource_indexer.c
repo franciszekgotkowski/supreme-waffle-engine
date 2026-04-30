@@ -1,5 +1,5 @@
 #include <common/errors.h>
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <assert.h>
 #include <stddef.h>
 #include <common/typedefs.h>
@@ -55,7 +55,7 @@ ResourceIndexer* InitializeResourceIntoArena(
 	return memory;
 }
 
-ResourceID RegisterNewResource_ResourceIndexer(
+ID RegisterNewResource_ResourceIndexer(
 	ResourceIndexer* indexer,
 	u64 size,
 	Error* err
@@ -99,7 +99,7 @@ ResourceID RegisterNewResource_ResourceIndexer(
 
 void* GetResource_ResourceIndexer(
 	ResourceIndexer* indexer,
-	ResourceID id,
+	ID id,
 	Error* err
 ) {
 	assert(indexer);

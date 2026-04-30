@@ -4,8 +4,6 @@
 #include <common/errors.h>
 #include <stdbool.h>
 
-typedef u64 CheckpointID;
-
 #define MAX_AMOUNT_OF_ARENA_CHECKPOINTS 100
 typedef struct {
 	void* checkpoint[MAX_AMOUNT_OF_ARENA_CHECKPOINTS]; // chekcpoints are places to which memory arena can reset to without reseting its all memory
@@ -64,7 +62,7 @@ Error reset_MemoryArena(
 // 	- OUT_OF_INDEXES	if there is no more available memory checkpoints to use
 // 	- OUT_OF_RANGE		if ptr does not belong to allocated adress space inside arena
 // 	- INVALID_INPUT		if ptr new pointer has lower value that the pointer from checkpoint earlier
-CheckpointID addCheckpoint_MemoryArena(
+ID addCheckpoint_MemoryArena(
 	MemoryArena* arena,
 	void* ptr,
 	Error* err
@@ -78,7 +76,7 @@ CheckpointID addCheckpoint_MemoryArena(
 // 	- LOCKED 			if arena is locked
 Error resetToCheckpoint_MemoryArena(
 	MemoryArena* arena,
-	CheckpointID id
+	ID id
 );
 
 void lock_MemoryArena(

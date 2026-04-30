@@ -2,7 +2,7 @@
 #include <external/cmocka.h>
 #include <stdlib.h>
 #include <tests/memory_arena_tests.h>
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <platform/memory_allocations.h>
 #include <common/range.h>
 #include <tests/test_memory_struct.h>
@@ -143,7 +143,7 @@ static void reset_memory_arena(void **state) {
 		KB,
 		&err
 	);
-	CheckpointID id = addCheckpoint_MemoryArena(
+	ID id = addCheckpoint_MemoryArena(
 		&arena,
 		arena.top-1,
 		&err
@@ -185,7 +185,7 @@ static void adding_good_checkpoints(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 	m = registerMemory_MemoryArena(
@@ -225,7 +225,7 @@ static void adding_checkpoints_when_arean_is_locked(void **state) {
 	MemoryArena arena = InitializeMemoryArena(memory->ptr, memory->size);
 	Error err;
 
-	CheckpointID id;
+	ID id;
 
 	void* m = registerMemory_MemoryArena(
 		&arena,
@@ -260,7 +260,7 @@ static void adding_checkpoint_with_pointer_outside_allocated_memory(void **state
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 	m = registerMemory_MemoryArena(
@@ -315,7 +315,7 @@ static void adding_too_many_checkpoints(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 
@@ -358,7 +358,7 @@ static void adding_non_sequentially_increasing_checkpoints(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 
@@ -407,7 +407,7 @@ static void reseting_to_checkpoint_in_fine_conditions(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 
@@ -450,7 +450,7 @@ static void reseting_to_checkpoint_when_arena_is_locked(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 
@@ -504,7 +504,7 @@ static void reseting_to_checkpoint_checkpoint_does_not_exist(void **state) {
 	Error err;
 	void* m;
 
-	CheckpointID id;
+	ID id;
 
 	assert_true(arena.amountOfCheckpoints == 0);
 

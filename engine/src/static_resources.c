@@ -9,7 +9,7 @@
 
 extern const u32 DefaultAmountsOfIndexes[AMOUNT_OF_STATIC_RESOURCES];
 
-void* GetStaticResource(
+void* GetStaticResource_StaticResourceIndexer(
 	StaticResourcesIndexer* staticSceneResources,
 	StaticResources resource,
 	Error* err
@@ -23,6 +23,7 @@ void* GetStaticResource(
 		return NULL;
 	}
 
+	*err = OK;
 	return staticSceneResources->ptr[resource];
 }
 
@@ -53,6 +54,13 @@ void InitializeStaticResource(
 			InitializeResourceIndexer(
 				ptr,
 				DefaultAmountsOfIndexes[OBJECT_3D_INDEXER],
+				arena
+			);
+			break;
+		case SHADER_PROGRAM_INDEXER:
+			InitializeResourceIndexer(
+				ptr,
+				DefaultAmountsOfIndexes[SHADER_PROGRAM_INDEXER],
 				arena
 			);
 			break;

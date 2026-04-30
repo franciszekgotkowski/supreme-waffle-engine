@@ -8,7 +8,7 @@ target_compile_options(engine PRIVATE
 
 set(ENGINE_SOURCES
 		${CMAKE_CURRENT_SOURCE_DIR}/src/memory_pool.c
-		${CMAKE_CURRENT_SOURCE_DIR}/src/memory_arena.c
+		# ${CMAKE_CURRENT_SOURCE_DIR}/src/memory_arena.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/font.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/scene.c
 		${CMAKE_CURRENT_SOURCE_DIR}/src/ui.c

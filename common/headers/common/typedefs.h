@@ -2,8 +2,6 @@
 
 #include <stdint.h>
 
-#define nullptr (void*)0
-
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -21,6 +19,8 @@ typedef const char* str;
 typedef char* mstr;
 
 typedef long long unsigned int llu;
+
+typedef i64 ID;
 
 typedef union {
     u32 arr[2];

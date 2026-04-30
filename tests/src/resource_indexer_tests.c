@@ -1,5 +1,5 @@
 #include <common/errors.h>
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <engine/resource_indexers.h>
 #include <tests/test_memory_struct.h>
 #include <external/cmocka.h>
@@ -139,7 +139,7 @@ static void register_resource_with_insufficient_memory_in_arena(void **state) {
 	assert_true(err == OK);
 	assert_ptr_not_equal(indexer, NULL);
 
-	ResourceID id = RegisterNewResource_ResourceIndexer(
+	ID id = RegisterNewResource_ResourceIndexer(
 		indexer,
 		KB/2,
 		&err
@@ -182,7 +182,7 @@ static void register_resource_with_insufficient_amount_of_indexes(void **state) 
 	assert_true(err == OK);
 	assert_ptr_not_equal(indexer, NULL);
 
-	ResourceID id = RegisterNewResource_ResourceIndexer(
+	ID id = RegisterNewResource_ResourceIndexer(
 		indexer,
 		KB/2,
 		&err
@@ -233,7 +233,7 @@ static void register_resource_when_arena_is_locked(void **state) {
 	assert_true(err == OK);
 	assert_ptr_not_equal(indexer, NULL);
 
-	ResourceID id = RegisterNewResource_ResourceIndexer(
+	ID id = RegisterNewResource_ResourceIndexer(
 		indexer,
 		KB/2,
 		&err
@@ -278,7 +278,7 @@ static void get_existing_resource(void **state) {
 	assert_true(err == OK);
 	assert_ptr_not_equal(indexer, NULL);
 
-	ResourceID id;
+	ID id;
 
 	id = RegisterNewResource_ResourceIndexer(
 		indexer,
@@ -333,7 +333,7 @@ static void get_not_existing_resource(void **state) {
 	assert_true(err == OK);
 	assert_ptr_not_equal(indexer, NULL);
 
-	ResourceID id;
+	ID id;
 	void* ptr;
 
 	ptr = GetResource_ResourceIndexer(

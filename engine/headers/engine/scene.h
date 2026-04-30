@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <engine/static_resources.h>
 #include <common/errors.h>
 #include <common/typedefs.h>
@@ -59,4 +59,31 @@ Error LoadLoadingScreenScene(
 void* GetStaticResource_SceneData(
 	SceneData* sceneData,
 	StaticResources staticResource
+);
+
+
+// You can add new resource into the scene, put it into arena managed by selected indexer, and return its ID
+// Can return errors:
+//	- OK
+//	- LOCKED			if memory arena is locked
+//	- OUT_OF_MEMORY		if there is no memory in arena to accomodate this indexer
+//	- OUT_OF_INDEXES	if there is no more indexes to fill in
+//	- DOES_NOT_EXIST	if resource indexer does not exist in current scene
+ID RegisterNewResource_SceneData(
+	SceneData* sceneData,
+	StaticResources type,
+	u32 size,
+	Error* err
+);
+
+// Allows for accessing scene resources managed by selected indexer
+// Can return in error:
+//	- OK
+// 	- OUT_OF_RANGE			if index is below 0 or if there is no resource under given ID
+//	- DOES_NOT_EXIST	if resource indexer does not exist in current scene
+void* GetResource_SceneData(
+	SceneData* sceneData,
+	StaticResources type,
+	ID id,
+	Error* err
 );

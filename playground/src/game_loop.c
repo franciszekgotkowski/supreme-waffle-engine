@@ -1,4 +1,5 @@
-#include <engine/memory_arena.h>
+#include "engine/static_resources.h"
+#include <common/memory_arena.h>
 #include <platform/measure_time.h>
 #include <platform/shader.h>
 #include <platform/graphics.h>
@@ -42,14 +43,27 @@ void GameLoop() {
 
 	// VERY TEMP CODE!!!
 	// PUSHING THINGS TO STACK WITHOUT INDEXER SHOULD NOT NOTMALLY HAPPEN
-	void* fontPtr = registerMemory_MemoryArena(
-		arenaPtr,
+	// void* fontPtr = registerMemory_MemoryArena(
+	// 	arenaPtr,
+	// 	GetSizeForEntireFont(&font),
+	// 	&err
+	// );
+
+	ID FontID = RegisterNewResource_SceneData(
+		sceneData,
+		FONT_INDEXER,
 		GetSizeForEntireFont(&font),
 		&err
 	);
 
 	assert(err == OK);
-	Font* FontLocation = fontPtr;
+	Font* FontLocation = GetResource_SceneData(
+		sceneData,
+		FONT_INDEXER,
+		FontID,
+		&err
+	);
+	assert(err == OK);
 	*FontLocation = font;
 	InitializeCharacterDataOntoFont(FontLocation, file);
 	freeEntireTextFile(file);
@@ -75,7 +89,7 @@ void GameLoop() {
 		s,
 		strlen(s),
 		textPtr,
-		fontPtr,
+		FontLocation,
 		(v2){
 			.x = 0.0f,
 			.y = 0.0f,
@@ -96,7 +110,7 @@ void GameLoop() {
 		s2,
 		strlen(s2),
 		textPtr,
-		fontPtr,
+		FontLocation,
 		(v2){
 			.x = 1.0f,
 			.y = -1.0f,
@@ -116,7 +130,7 @@ void GameLoop() {
 		s3,
 		strlen(s3),
 		textPtr,
-		fontPtr,
+		FontLocation,
 		(v2){
 			.x = 1.0f,
 			.y = 0.0f,
@@ -130,8 +144,6 @@ void GameLoop() {
 		2
 	);
 	assert(err == OK);
-
-
 
 
 	ShaderProgramID TextShader = CreateShaderProgram("../../engine/src/shaders/render_text.vert", "../../engine/src/shaders/render_text.frag");

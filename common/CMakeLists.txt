@@ -8,6 +8,7 @@ target_compile_options(common PRIVATE
 
 set(COMMON_SOURCES
 	src/string_utils.c
+	src/memory_arena.c
 )
 
 target_sources(common PRIVATE

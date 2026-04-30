@@ -1,8 +1,7 @@
 #include <common/typedefs.h>
-#include <engine/memory_pool.h>
 #include <common/errors.h>
 #include <assert.h>
-#include <engine/memory_arena.h>
+#include <common/memory_arena.h>
 #include <string.h>
 
 MemoryArena InitializeMemoryArena(
@@ -90,7 +89,7 @@ Error reset_MemoryArena(
 	return OK;
 }
 
-CheckpointID addCheckpoint_MemoryArena(
+ID addCheckpoint_MemoryArena(
 	MemoryArena* arena,
 	void* ptr,
 	Error* err
@@ -128,7 +127,7 @@ CheckpointID addCheckpoint_MemoryArena(
 
 Error resetToCheckpoint_MemoryArena(
 	MemoryArena* arena,
-	CheckpointID id
+	ID id
 ) {
 	assert(arena);
 
